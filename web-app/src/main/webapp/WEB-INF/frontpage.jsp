@@ -21,8 +21,17 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <a class="btn btn-primary" href="<%= request.getContextPath()%>/files" role="button">Manage Files</a>
-<%--    <button class="btn btn-primary" type="submit">Button</button>--%>
+            <form action="<%= request.getContextPath() %>" method="post" enctype="multipart/form-data" class="mt-3">
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input type="file" name="rfcfile" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
+                        <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
