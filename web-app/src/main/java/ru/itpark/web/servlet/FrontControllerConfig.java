@@ -6,6 +6,8 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import ru.itpark.MyService;
 import ru.itpark.MyServiceImpl;
+import ru.itpark.files.MyFileService;
+import ru.itpark.files.MyFileServiceImpl;
 import ru.itpark.web.router.Router;
 import ru.itpark.web.router.RouterDefaultImpl;
 import ru.itpark.web.router.RouterHelloWorldImpl;
@@ -16,8 +18,9 @@ public class FrontControllerConfig extends GuiceServletContextListener {
         return Guice.createInjector(new ServletModule() {
             @Override
             protected void configureServlets() {
-                serve("/", "/files").with(FrontController.class);
+                serve("/").with(FrontController.class);
                 bind(Router.class).to(RouterDefaultImpl.class);
+                bind(MyFileService.class).to(MyFileServiceImpl.class);
 //                bind(MyService.class).to(MyServiceImpl.class);
             }
         });
