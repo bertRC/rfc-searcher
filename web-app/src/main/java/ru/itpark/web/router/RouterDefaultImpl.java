@@ -1,6 +1,8 @@
 package ru.itpark.web.router;
 
+import com.google.inject.Inject;
 import lombok.val;
+import ru.itpark.files.MyFileService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +11,13 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class RouterDefaultImpl implements Router {
+    private MyFileService fileService;
 //    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
+
+    @Inject
+    public void setFileService(MyFileService fileService) {
+        this.fileService = fileService;
+    }
 
     @Override
     public void route(HttpServletRequest req, HttpServletResponse resp) {
@@ -22,14 +30,15 @@ public class RouterDefaultImpl implements Router {
                     req.getRequestDispatcher("/WEB-INF/frontpage.jsp").forward(req, resp);
                     return;
                 }
-            }
 
-            if (url.equals("/files")) {
-                if (req.getMethod().equals("GET")) {
-                    req.getRequestDispatcher("/WEB-INF/filespage.jsp").forward(req, resp);
+                if (req.getMethod().equals("POST")) {
+                    val part = req.getPart("rfcfile");
+                    fileService.writeFile(part);
+                    resp.sendRedirect(rootUrl);
                     return;
                 }
 
+                throw new RuntimeException();
             }
 
 
