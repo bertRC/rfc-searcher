@@ -4,6 +4,7 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class MyFileServiceImpl implements FileService {
     private final String uploadPath;
@@ -32,5 +33,15 @@ public class MyFileServiceImpl implements FileService {
             throw new RuntimeException(e);
 //            return null;
         }
+    }
+
+    @Override
+    public void writeFiles(List<Part> parts) {
+        final long startTime = System.currentTimeMillis();
+        for (Part part : parts) {
+            writeFile(part);
+        }
+        final long duration = System.currentTimeMillis() - startTime;
+        System.out.println("Uploading took " + duration + " milliseconds");
     }
 }

@@ -6,6 +6,9 @@ import ru.itpark.files.FileService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RouterDefaultImpl implements Router {
     private FileService fileService;
@@ -29,8 +32,10 @@ public class RouterDefaultImpl implements Router {
                 }
 
                 if (req.getMethod().equals("POST")) {
-                    val part = req.getPart("rfcfile");
-                    fileService.writeFile(part);
+//                    val part = req.getPart("rfcfile");
+//                    fileService.writeFile(part);
+                    List<Part> parts = req.getParts().stream().filter(part -> part.getName().equals("rfcfile")).collect(Collectors.toList());
+                    fileService.writeFiles(parts);
                     resp.sendRedirect(rootUrl);
                     return;
                 }
