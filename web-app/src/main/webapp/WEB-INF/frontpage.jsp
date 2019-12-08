@@ -24,7 +24,7 @@
             <form action="<%= request.getContextPath() %>" method="post" enctype="multipart/form-data" class="mt-3">
                 <div class="input-group">
                     <div class="custom-file">
-                        <input type="file" name="rfcfile" multiple="multiple" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
+                        <input type="file" name="rfcFile" multiple="multiple" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
                         <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
                     </div>
                     <div class="input-group-append">

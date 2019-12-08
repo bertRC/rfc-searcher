@@ -32,9 +32,9 @@ public class RouterDefaultImpl implements Router {
                 }
 
                 if (req.getMethod().equals("POST")) {
-//                    val part = req.getPart("rfcfile");
+//                    val part = req.getPart("rfcFile");
 //                    fileService.writeFile(part);
-                    List<Part> parts = req.getParts().stream().filter(part -> part.getName().equals("rfcfile")).collect(Collectors.toList());
+                    List<Part> parts = req.getParts().stream().filter(part -> part.getName().equals("rfcFile")).collect(Collectors.toList());
                     fileService.writeFiles(parts);
                     resp.sendRedirect(rootUrl);
                     return;
