@@ -21,7 +21,7 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <a class="btn btn-primary" href="#" role="button">Manage Files</a>
+            <a class="btn btn-primary" href="/files/" role="button">Manage Files</a>
         </div>
     </div>
 </div>
