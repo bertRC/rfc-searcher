@@ -21,7 +21,8 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <a class="btn btn-primary" href="/files/" role="button">Manage Files</a>
+            <a class="btn btn-primary" href="<%= request.getContextPath()%>/files" role="button">Manage Files</a>
+<%--    <button class="btn btn-primary" type="submit">Button</button>--%>
         </div>
     </div>
 </div>
