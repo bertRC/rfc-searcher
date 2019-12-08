@@ -2,20 +2,17 @@ package ru.itpark.web.router;
 
 import com.google.inject.Inject;
 import lombok.val;
-import ru.itpark.files.MyFileService;
+import ru.itpark.files.FileService;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.regex.Pattern;
 
 public class RouterDefaultImpl implements Router {
-    private MyFileService fileService;
+    private FileService fileService;
 //    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
 
     @Inject
-    public void setFileService(MyFileService fileService) {
+    public void setFileService(FileService fileService) {
         this.fileService = fileService;
     }
 

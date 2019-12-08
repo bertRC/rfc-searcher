@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class MyFileServiceImpl implements MyFileService {
+public class MyFileServiceImpl implements FileService {
     private final String uploadPath;
     private final String rfcPath;
 
