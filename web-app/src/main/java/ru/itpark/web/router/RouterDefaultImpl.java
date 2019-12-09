@@ -41,6 +41,22 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
+            // rfc1.txt or ?remove=rfc1.txt
+            if (url.equals("/rfc/")) {
+                if (req.getMethod().equals("GET")) {
+                    val filename = req.getParameter("remove");
+                    if (filename.toLowerCase().equals("all")) {
+                        fileService.removeAll();
+                    } else {
+                        fileService.removeFile(filename);
+                    }
+                    resp.sendRedirect(rootUrl);
+                    return;
+                }
+
+                throw new RuntimeException();
+            }
+
             if (url.startsWith("/rfc/")) {
                 if (req.getMethod().equals("GET")) {
                     val filename = url.substring("/rfc/".length());
@@ -50,7 +66,6 @@ public class RouterDefaultImpl implements Router {
 
                 throw new RuntimeException();
             }
-
 
 
 //            val matcher = urlPattern.matcher(url);
