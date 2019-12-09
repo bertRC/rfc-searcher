@@ -6,8 +6,6 @@ import ru.itpark.files.FileService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class RouterDefaultImpl implements Router {
@@ -27,14 +25,14 @@ public class RouterDefaultImpl implements Router {
 
             if (url.equals("/")) {
                 if (req.getMethod().equals("GET")) {
+                    val fileNames = fileService.getAll();
+                    req.setAttribute("rfcFiles", fileNames);
                     req.getRequestDispatcher("/WEB-INF/frontpage.jsp").forward(req, resp);
                     return;
                 }
 
                 if (req.getMethod().equals("POST")) {
-//                    val part = req.getPart("rfcFile");
-//                    fileService.writeFile(part);
-                    List<Part> parts = req.getParts().stream().filter(part -> part.getName().equals("rfcFile")).collect(Collectors.toList());
+                    val parts = req.getParts().stream().filter(part -> part.getName().equals("rfcFile")).collect(Collectors.toList());
                     fileService.writeFiles(parts);
                     resp.sendRedirect(rootUrl);
                     return;
@@ -42,6 +40,17 @@ public class RouterDefaultImpl implements Router {
 
                 throw new RuntimeException();
             }
+
+            if (url.startsWith("/rfc/")) {
+                if (req.getMethod().equals("GET")) {
+                    val filename = url.substring("/rfc/".length());
+                    fileService.readFile(filename, resp.getWriter());
+                    return;
+                }
+
+                throw new RuntimeException();
+            }
+
 
 
 //            val matcher = urlPattern.matcher(url);
