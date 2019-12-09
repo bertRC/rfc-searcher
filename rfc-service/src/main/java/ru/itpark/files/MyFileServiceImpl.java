@@ -1,10 +1,19 @@
 package ru.itpark.files;
 
+import lombok.val;
+
 import javax.servlet.http.Part;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class MyFileServiceImpl implements FileService {
     private final String uploadPath;
@@ -41,5 +50,40 @@ public class MyFileServiceImpl implements FileService {
         parts.forEach(this::writeFile);
         final long duration = System.currentTimeMillis() - startTime;
         System.out.println("Uploading took " + duration + " milliseconds");
+    }
+
+    //TODO: exceptions!!!
+    @Override
+    public List<String> getAll() {
+        try (val paths = Files.walk(Paths.get(rfcPath))) {
+            return paths.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean removeFile(Path path) {
+        try {
+            return Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeFile(String name) {
+        return removeFile(Paths.get(rfcPath).resolve(name));
+    }
+
+    @Override
+    public void removeAll() {
+        try (val paths = Files.walk(Paths.get(rfcPath))) {
+            paths.sorted(Comparator.reverseOrder()).forEach(this::removeFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

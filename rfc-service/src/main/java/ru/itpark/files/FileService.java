@@ -1,6 +1,7 @@
 package ru.itpark.files;
 
 import javax.servlet.http.Part;
+import java.nio.file.Path;
 import java.util.List;
 
 public interface FileService {
@@ -12,7 +13,7 @@ public interface FileService {
 
     boolean removeFile(String name);
 
-    void removeAll();
+    boolean removeFile(Path path);
 
-    void downloadRfcFromUrl(String urlRegex, int fromIndex, int toIndex);
+    void removeAll();
 }
