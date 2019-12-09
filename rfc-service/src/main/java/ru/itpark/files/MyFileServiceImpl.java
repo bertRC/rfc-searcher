@@ -80,8 +80,11 @@ public class MyFileServiceImpl implements FileService {
 
     @Override
     public void removeAll() {
+        final long startTime = System.currentTimeMillis();
         try (val paths = Files.walk(Paths.get(rfcPath))) {
             paths.sorted(Comparator.reverseOrder()).forEach(this::removeFile);
+            final long duration = System.currentTimeMillis() - startTime;
+            System.out.println("Deleting took " + duration + " milliseconds");
         } catch (IOException e) {
             e.printStackTrace();
         }
