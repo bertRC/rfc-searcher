@@ -38,9 +38,7 @@ public class MyFileServiceImpl implements FileService {
     @Override
     public void writeFiles(List<Part> parts) {
         final long startTime = System.currentTimeMillis();
-        for (Part part : parts) {
-            writeFile(part);
-        }
+        parts.forEach(this::writeFile);
         final long duration = System.currentTimeMillis() - startTime;
         System.out.println("Uploading took " + duration + " milliseconds");
     }
