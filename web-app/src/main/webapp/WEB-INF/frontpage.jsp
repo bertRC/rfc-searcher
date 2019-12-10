@@ -11,6 +11,7 @@
     <div class="row mt-3">
         <div class="col">
             <h1 style="text-align: center">RFC Searcher</h1>
+            Number of processors on the server: <%= Runtime.getRuntime().availableProcessors() %>
         </div>
     </div>
     <div class="row mt-3">
