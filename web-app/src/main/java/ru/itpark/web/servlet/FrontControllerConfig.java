@@ -17,9 +17,9 @@ public class FrontControllerConfig extends GuiceServletContextListener {
             @Override
             protected void configureServlets() {
                 serve("/", "/rfc/*").with(FrontController.class);
-//                bind(Router.class).to(RouterDefaultImpl.class);
-//                bind(FileService.class).to(MyFileServiceImpl.class);
-                bind(Router.class).to(RouterSessionInfoImpl.class);
+                bind(Router.class).to(RouterDefaultImpl.class);
+                bind(FileService.class).to(MyFileServiceImpl.class);
+//                bind(Router.class).to(RouterSessionInfoImpl.class);
 //                bind(MyService.class).to(MyServiceImpl.class);
             }
         });
