@@ -11,7 +11,6 @@
     <div class="row mt-3">
         <div class="col">
             <h1 style="text-align: center">RFC Searcher</h1>
-            Number of processors on the server: <%= Runtime.getRuntime().availableProcessors() %>
         </div>
     </div>
     <div class="row mt-3">
@@ -28,7 +27,7 @@
                     <div class="custom-file">
                         <input type="file" name="rfcFile" multiple="multiple" class="custom-file-input"
                                id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
-                        <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                        <label class="custom-file-label" for="inputGroupFile04">Choose files</label>
                     </div>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload

@@ -8,6 +8,7 @@ import ru.itpark.files.FileService;
 import ru.itpark.files.MyFileServiceImpl;
 import ru.itpark.web.router.Router;
 import ru.itpark.web.router.RouterDefaultImpl;
+import ru.itpark.web.router.RouterHelloWorldImpl;
 import ru.itpark.web.router.RouterSessionInfoImpl;
 
 public class FrontControllerConfig extends GuiceServletContextListener {
@@ -17,9 +18,10 @@ public class FrontControllerConfig extends GuiceServletContextListener {
             @Override
             protected void configureServlets() {
                 serve("/", "/rfc/*").with(FrontController.class);
-                bind(Router.class).to(RouterDefaultImpl.class);
-                bind(FileService.class).to(MyFileServiceImpl.class);
+//                bind(Router.class).to(RouterDefaultImpl.class);
 //                bind(Router.class).to(RouterSessionInfoImpl.class);
+                bind(Router.class).to(RouterHelloWorldImpl.class);
+//                bind(FileService.class).to(MyFileServiceImpl.class);
 //                bind(MyService.class).to(MyServiceImpl.class);
             }
         });
