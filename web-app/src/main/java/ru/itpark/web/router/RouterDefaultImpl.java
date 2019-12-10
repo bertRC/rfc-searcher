@@ -59,6 +59,7 @@ public class RouterDefaultImpl implements Router {
 
             if (url.startsWith("/rfc/")) {
                 if (req.getMethod().equals("GET")) {
+                    resp.setContentType("text/plain;charset=utf-8");
                     val filename = url.substring("/rfc/".length());
                     fileService.readFile(filename, resp.getWriter());
                     return;
