@@ -20,7 +20,6 @@ public class RouterDefaultImpl implements Router {
     @Override
     public void route(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.setCharacterEncoding("UTF-8");
             val rootUrl = req.getContextPath().isEmpty() ? "/" : req.getContextPath();
             val url = req.getRequestURI().substring(req.getContextPath().length());
 
