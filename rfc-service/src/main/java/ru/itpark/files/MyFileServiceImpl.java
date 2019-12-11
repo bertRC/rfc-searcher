@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class MyFileServiceImpl implements FileService {
+//TODO: String replace to Path
     private final String uploadPath;
     private final String rfcPath;
 
@@ -119,5 +120,16 @@ public class MyFileServiceImpl implements FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean downloadFromUrl(String url, String fileName) {
+        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream())) {
+            Files.copy(in, Paths.get(rfcPath).resolve(fileName), REPLACE_EXISTING);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

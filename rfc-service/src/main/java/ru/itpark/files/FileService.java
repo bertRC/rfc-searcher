@@ -19,4 +19,6 @@ public interface FileService {
     boolean removeFile(Path path);
 
     void removeAll();
+
+    boolean downloadFromUrl(String url, String fileName);
 }
