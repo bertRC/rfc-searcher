@@ -3,6 +3,7 @@ package ru.itpark.web.router;
 import com.google.inject.Inject;
 import lombok.val;
 import ru.itpark.files.FileService;
+import ru.itpark.service.RfcService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,11 +11,17 @@ import java.util.stream.Collectors;
 
 public class RouterDefaultImpl implements Router {
     private FileService fileService;
+    private RfcService rfcService;
 //    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
 
     @Inject
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
+    }
+
+    @Inject
+    public void setRfcService(RfcService rfcService) {
+        this.rfcService = rfcService;
     }
 
     @Override
