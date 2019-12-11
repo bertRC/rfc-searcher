@@ -31,10 +31,11 @@
                         Files
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Download From "tools.ietf.org/rfc"</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#downloadModal">Download From
+                            "tools.ietf.org/rfc"</a>
                         <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc/?remove=all">Delete All</a>
-                    <%--                        <div class="dropdown-divider"></div>--%>
-<%--                        <a class="dropdown-item" href="#">Something else here</a>--%>
+                        <%--                        <div class="dropdown-divider"></div>--%>
+                        <%--                        <a class="dropdown-item" href="#">Something else here</a>--%>
                     </div>
                 </li>
                 <%--                        <li class="nav-item">--%>
@@ -65,6 +66,11 @@
             </form>
         </div>
     </div>
+
+<%--    <div class="progress">--%>
+<%--        <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="75"--%>
+<%--             aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>--%>
+<%--    </div>--%>
 
     <% List<String> fileNames = (List<String>) request.getAttribute("rfcFiles"); %>
     <% if (fileNames != null && !fileNames.isEmpty()) { %>
@@ -99,6 +105,34 @@
     <% } %>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <form action="<%= request.getContextPath() %>/rfc/download" method="post" enctype="multipart/form-data">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Download From
+                        "tools.ietf.org/rfc"</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="numbers">Enter file numbers (e.g. 1, 2, 5-10)</label>
+                        <input type="text" id="numbers" name="numbers" class="form-control" required value="1-200">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Download</button>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
 
 <%@ include file="bootstrap-scripts.jsp" %>
 </body>
