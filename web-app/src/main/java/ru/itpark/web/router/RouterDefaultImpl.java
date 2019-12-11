@@ -27,7 +27,7 @@ public class RouterDefaultImpl implements Router {
                 if (req.getMethod().equals("GET")) {
                     val fileNames = fileService.getAll();
                     req.setAttribute("rfcFiles", fileNames);
-                    req.getRequestDispatcher("/WEB-INF/frontpage.jsp").forward(req, resp);
+                    req.getRequestDispatcher("/WEB-INF/newfrontpage.jsp").forward(req, resp);
                     return;
                 }
 
