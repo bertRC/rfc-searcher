@@ -4,7 +4,7 @@ function startTimer() {
         url: 'scriptHandler',
         success: function (responseText) {
             $('#timer').text(responseText);
-            setTimeout(startTimer, 1000);
+            setTimeout(startTimer, 200);
         }
     });
 }
