@@ -134,6 +134,7 @@
     </form>
 </div>
 
-<%@ include file="bootstrap-scripts.jsp" %>
+<%--<%@ include file="bootstrap-scripts.jsp" %>--%>
+<%@ include file="bootstrap-scripts-old.jsp" %>
 </body>
 </html>
