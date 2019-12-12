@@ -1,8 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%@ include file="timer-script.jsp" %>
-    <script src="http://code.jquery.com/jquery-2.2.4.js" type="text/javascript"></script>
+    <%@ include file="timer-scripts.jsp" %>
     <title>Coming soon</title>
 </head>
 <body onload="startTimer()">
