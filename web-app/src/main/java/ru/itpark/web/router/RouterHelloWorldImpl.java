@@ -25,12 +25,24 @@ public class RouterHelloWorldImpl implements Router {
                     SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
                     Date finalDate = sdf.parse(finalDateString);
                     long remainMillis = finalDate.getTime() - System.currentTimeMillis();
-                    String daysRemain = sdf1.format(remainMillis);
-                    String timeRemain = sdf2.format(remainMillis);
-                    req.setAttribute("daysRemain", daysRemain + "d");
+                    String timeRemain = sdf1.format(remainMillis) + "d " + sdf2.format(remainMillis);
                     req.setAttribute("timeRemain", timeRemain);
                     req.getRequestDispatcher("/WEB-INF/hello.jsp").forward(req, resp);
+                    return;
                 }
+            }
+
+            if (url.equals("/scriptHandler")) {
+                String finalDateString = "2019/12/21 09:00:00";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                SimpleDateFormat sdf1 = new SimpleDateFormat("d");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+                Date finalDate = sdf.parse(finalDateString);
+                long remainMillis = finalDate.getTime() - System.currentTimeMillis();
+                String timeRemain = sdf1.format(remainMillis) + "d " + sdf2.format(remainMillis);
+
+                resp.setContentType("text/plain");
+                resp.getWriter().write(timeRemain);
             }
 
         } catch (Exception e) {
