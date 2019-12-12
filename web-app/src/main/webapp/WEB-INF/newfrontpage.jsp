@@ -10,7 +10,6 @@
 <div class="container">
 
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
-        <%--        <a class="navbar-brand" href="#">RFC Searcher</a>--%>
         <span class="navbar-brand mb-0 h1">RFC Searcher</span>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,13 +33,8 @@
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#downloadModal">Download From
                             "tools.ietf.org/rfc"</a>
                         <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc/?remove=all">Delete All</a>
-                        <%--                        <div class="dropdown-divider"></div>--%>
-                        <%--                        <a class="dropdown-item" href="#">Something else here</a>--%>
                     </div>
                 </li>
-                <%--                        <li class="nav-item">--%>
-                <%--                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>--%>
-                <%--                        </li>--%>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
