@@ -14,13 +14,13 @@
     </parent>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>ru.itpark</groupId>-->
-<!--            <artifactId>jdbc-template</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>ru.itpark</groupId>
-            <artifactId>rfc-service</artifactId>
+            <artifactId>jdbc-template</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.itpark</groupId>
+            <artifactId>file-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -38,10 +38,10 @@
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.xerial</groupId>-->
-<!--            <artifactId>sqlite-jdbc</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -69,22 +69,18 @@
                                     <groupId>org.apache.tomcat</groupId>
                                     <artifactId>tomcat-dbcp</artifactId>
                                 </artifactItem>
-<!--                                <dependency>-->
-<!--                                    <groupId>org.xerial</groupId>-->
-<!--                                    <artifactId>sqlite-jdbc</artifactId>-->
-<!--                                </dependency>-->
-<!--                                <artifactItem>-->
-<!--                                    <groupId>ru.itpark</groupId>-->
-<!--                                    <artifactId>front-controller</artifactId>-->
-<!--                                </artifactItem>-->
+                                <dependency>
+                                    <groupId>org.xerial</groupId>
+                                    <artifactId>sqlite-jdbc</artifactId>
+                                </dependency>
                                 <dependency>
                                     <groupId>ru.itpark</groupId>
-                                    <artifactId>rfc-service</artifactId>
+                                    <artifactId>file-service</artifactId>
                                 </dependency>
-<!--                                <dependency>-->
-<!--                                    <groupId>ru.itpark</groupId>-->
-<!--                                    <artifactId>jdbc-template</artifactId>-->
-<!--                                </dependency>-->
+                                <dependency>
+                                    <groupId>ru.itpark</groupId>
+                                    <artifactId>jdbc-template</artifactId>
+                                </dependency>
                             </artifactItems>
                         </configuration>
                     </execution>

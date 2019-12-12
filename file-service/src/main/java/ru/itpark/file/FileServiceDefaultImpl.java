@@ -1,4 +1,4 @@
-package ru.itpark.files;
+package ru.itpark.file;
 
 import lombok.val;
 

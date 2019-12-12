@@ -2,7 +2,7 @@ package ru.itpark.web.router;
 
 import com.google.inject.Inject;
 import lombok.val;
-import ru.itpark.files.FileService;
+import ru.itpark.file.FileService;
 import ru.itpark.service.RfcService;
 
 import javax.servlet.http.HttpServletRequest;

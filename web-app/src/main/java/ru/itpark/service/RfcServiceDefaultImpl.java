@@ -1,7 +1,7 @@
 package ru.itpark.service;
 
 import com.google.inject.Inject;
-import ru.itpark.files.FileService;
+import ru.itpark.file.FileService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
