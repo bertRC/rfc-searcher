@@ -6,17 +6,23 @@ import ru.itpark.file.FileService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RfcServiceDefaultImpl implements RfcService {
     private FileService fileService;
+private final AtomicInteger downloadPercent = new AtomicInteger(0);
 
     @Inject
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
     }
 
+    @Override
+    public int getDownloadPercent() {
+        return downloadPercent.get();
+    }
+
     private List<Integer> parseIntToList(String str) {
-        //"1, 2, 3, 10-15, 18, 20-30, 45"
         List<Integer> result = new ArrayList<>();
         Arrays.stream(str
                 .replaceAll("\\s", "")

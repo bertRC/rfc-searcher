@@ -48,6 +48,15 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
+            //            val matcher = urlPattern.matcher(url);
+//            String queryName;
+//            String attribute;
+//            // url template: "/queryName/attribute"
+//            if (matcher.find()) {
+//                queryName = matcher.group(1);
+//                attribute = matcher.group(2);
+//            } else return;
+
             // rfc1.txt or ?remove=rfc1.txt
             if (url.equals("/rfc/")) {
                 if (req.getMethod().equals("GET")) {
@@ -84,15 +93,6 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
-
-//            val matcher = urlPattern.matcher(url);
-//            String queryName;
-//            String attribute;
-//            // url template: "/queryName/attribute"
-//            if (matcher.find()) {
-//                queryName = matcher.group(1);
-//                attribute = matcher.group(2);
-//            } else return;
 
         } catch (Exception e) {
             e.printStackTrace();
