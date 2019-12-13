@@ -10,7 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class RfcServiceDefaultImpl implements RfcService {
     private FileService fileService;
-private final AtomicInteger downloadPercent = new AtomicInteger(0);
+    private Thread downloadThread;
+    private final AtomicInteger downloadPercent = new AtomicInteger(-1); // -1 means that there is no downloading progress right now
 
     @Inject
     public void setFileService(FileService fileService) {
@@ -18,8 +19,8 @@ private final AtomicInteger downloadPercent = new AtomicInteger(0);
     }
 
     @Override
-    public int getDownloadPercent() {
-        return downloadPercent.get();
+    public String getDownloadPercent() {
+        return downloadPercent.toString();
     }
 
     private List<Integer> parseIntToList(String str) {
@@ -53,18 +54,39 @@ private final AtomicInteger downloadPercent = new AtomicInteger(0);
     @Override
     public void downloadAllFromUrl(String numbers) {
         long startTime = System.currentTimeMillis();
-        final String urlRegex = "https://tools.ietf.org/rfc/rfc%d.txt";
-        final String fileNameRegex = "rfc%d.txt";
-        final List<Integer> nums = parseIntToList(numbers);
-        nums.forEach(i -> {
-            String fileName = String.format(fileNameRegex, i);
-            String url = String.format(urlRegex, i);
-            if (!fileService.downloadFromUrl(url, fileName)) {
-                System.out.println("Can not download " + fileName);
+        if (downloadPercent.get() != -1) {
+            // need to interrupt current working thread
+            // and restart task as new
+            if (downloadThread != null && !downloadThread.isInterrupted()) {
+                downloadThread.interrupt();
             }
+        }
+        downloadPercent.set(0);
+        downloadThread = new Thread(() -> {
+            final String urlRegex = "https://tools.ietf.org/rfc/rfc%d.txt";
+            final String fileNameRegex = "rfc%d.txt";
+            final List<Integer> nums = parseIntToList(numbers);
+            for (int i = 0; i < nums.size(); i++) {
+                int index = nums.get(i);
+                String fileName = String.format(fileNameRegex, index);
+                if (fileName.equals("rfc10.txt")) {
+                    Thread.currentThread().interrupt();
+                }
+                String url = String.format(urlRegex, index);
+                if (!fileService.downloadFromUrl(url, fileName, false)) {
+                    System.out.println("Can not download " + fileName);
+                }
+                downloadPercent.set(100 * i / nums.size());
+                if (Thread.currentThread().isInterrupted()) {
+                    System.out.println("Downloading was canceled on file: " + fileName);
+                    break;
+                }
+            }
+            long duration = System.currentTimeMillis() - startTime;
+            System.out.println("Downloading took " + duration + " milliseconds");
+            downloadPercent.set(-1);
         });
-        long duration = System.currentTimeMillis() - startTime;
-        System.out.println("Downloading took " + duration + " milliseconds");
+        downloadThread.start();
     }
 
 }

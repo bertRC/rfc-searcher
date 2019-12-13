@@ -123,13 +123,17 @@ public class MyFileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean downloadFromUrl(String url, String fileName) {
-        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream())) {
-            Files.copy(in, Paths.get(rfcPath).resolve(fileName), REPLACE_EXISTING);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
+    public boolean downloadFromUrl(String url, String fileName, boolean replaceIfExists) {
+        Path filePath = Paths.get(rfcPath).resolve(fileName);
+        if (replaceIfExists || !Files.exists(filePath)) {
+            try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream())) {
+                Files.copy(in, filePath, REPLACE_EXISTING);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
         }
-        return false;
+        return true;
     }
 }

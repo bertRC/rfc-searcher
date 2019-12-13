@@ -1,7 +1,7 @@
 package ru.itpark.service;
 
 public interface RfcService {
-    int getDownloadPercent();
+    String getDownloadPercent();
 
     void downloadAllFromUrl(String numbers);
 }

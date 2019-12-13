@@ -115,13 +115,22 @@ public class FileServiceDefaultImpl implements FileService {
     }
 
     @Override
-    public boolean downloadFromUrl(String url, String fileName) {
-        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream())) {
-            Files.copy(in, rfcPath.resolve(fileName), REPLACE_EXISTING);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
+    public boolean downloadFromUrl(String url, String fileName, boolean replaceIfExists) {
+        Path filePath = rfcPath.resolve(fileName);
+        if (replaceIfExists || !Files.exists(filePath)) {
+            try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream())) {
+                Files.copy(in, filePath, REPLACE_EXISTING);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                if (Thread.currentThread().isInterrupted()) {
+//                     trying to delete last damaged file
+                    removeFile(fileName);
+                    System.out.println("Downloading was canceled. Damaged file was deleted: " + fileName);
+                }
+            }
+            return false;
         }
-        return false;
+        return true;
     }
 }

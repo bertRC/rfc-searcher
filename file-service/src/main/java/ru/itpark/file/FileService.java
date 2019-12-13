@@ -20,5 +20,5 @@ public interface FileService {
 
     void removeAll();
 
-    boolean downloadFromUrl(String url, String fileName);
+    boolean downloadFromUrl(String url, String fileName, boolean replaceIfExists);
 }

@@ -5,7 +5,8 @@
     <title>RFC Searcher</title>
     <%@ include file="bootstrap-css.jsp" %>
 </head>
-<body>
+<%--<body>--%>
+<body onload="hello()">
 
 <div class="container">
 
@@ -61,18 +62,27 @@
         </div>
     </div>
 
-    <div class="progress" id="downloadProgress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" id="downloadProgressbar" role="progressbar" aria-valuenow="0"
-             aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%
+    <%--    <script>--%>
+    <%--        function hello() {--%>
+    <%--            var par = $('#downloadProgress').attr('style');--%>
+    <%--            alert(par);--%>
+    <%--        }--%>
+    <%--    </script>--%>
+
+    <% String downloadProgress = (String) request.getAttribute("downloadProgress"); %>
+    <% String pval = (downloadProgress != null) ? downloadProgress : "-1"; %>
+    <% String visibility = "hidden"; %>
+    <% if (!pval.equals("-1")) {
+        visibility = "visible";
+    } else {
+        pval = "0";
+    }%>
+    <div class="progress" id="downloadProgress" style="visibility: <%= visibility %>">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" id="downloadProgressbar" role="progressbar"
+             aria-valuenow="<%= pval %>"
+             aria-valuemin="0" aria-valuemax="100" style="width: <%= pval %>%"><%= pval %>%
         </div>
     </div>
-
-<%--    <script>--%>
-<%--        function hello() {--%>
-<%--            var par = $('#downloadProgressbar').attr('aria-valuenow');--%>
-<%--            alert(par);--%>
-<%--        }--%>
-<%--    </script>--%>
 
     <% List<String> fileNames = (List<String>) request.getAttribute("rfcFiles"); %>
     <% if (fileNames != null && !fileNames.isEmpty()) { %>
