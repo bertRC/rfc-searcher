@@ -10,7 +10,6 @@
 <p>
     <span id="timer" style="color: #4af; font-size: 150%; font-weight: bold;">${timeRemain}</span>
 </p>
-<script src="https://code.jquery.com/jquery-2.2.4.js" type="text/javascript"></script>
 <%@ include file="timer-script.jsp" %>
 </body>
 </html>
