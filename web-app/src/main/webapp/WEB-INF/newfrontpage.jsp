@@ -3,7 +3,10 @@
 <html>
 <head>
     <title>RFC Searcher</title>
-    <%@ include file="bootstrap-css.jsp" %>
+    <%@ include file="css-collection.jsp" %>
+<%--    <%@ include file="bootstrap-css.jsp" %>--%>
+<%--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">--%>
+<%--    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">--%>
 </head>
 <body>
 <div class="container">
@@ -77,9 +80,9 @@
 
     <% List<String> fileNames = (List<String>) request.getAttribute("rfcFiles"); %>
     <% if (fileNames != null && !fileNames.isEmpty()) { %>
-    <div class="row">
+    <div class="row" style="margin-top: 16px">
         <div class="col">
-            <table class="table table-sm">
+            <table class="table table-sm" id="fileTable">
                 <thead>
                 <tr>
                     <th scope="col">Filename</th>
@@ -138,7 +141,15 @@
 </div>
 
 <%--<%@ include file="bootstrap-scripts.jsp" %>--%>
-<%@ include file="bootstrap-scripts-old.jsp" %>
-<script><%@ include file="js/download-progress-script.js" %></script>
+<%@ include file="script-collection.jsp" %>
+<%--<%@ include file="bootstrap-scripts-old.jsp" %>--%>
+<%--<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>--%>
+<%--<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>--%>
+<script>
+    <%@ include file="js/download-progress.js" %>
+</script>
+<script>
+    <%@ include file="js/file-table-init.js" %>
+</script>
 </body>
 </html>

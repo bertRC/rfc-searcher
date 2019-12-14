@@ -1,4 +1,4 @@
-const delay = 200;
+const delay = 500;
 
 $(document).ready(downloadProgressInit());
 
@@ -14,8 +14,8 @@ function downloadProgressInit() {
         success: function (responseText) {
             if (responseText >= 0 && responseText < 100) {
                 // initialization
-                $('#downloadProgress').css('visibility', 'visible');
-                setProgressValue($('#downloadProgressbar'), responseText);
+                // $('#downloadProgress').css('visibility', 'visible');
+                // setProgressValue($('#downloadProgressbar'), responseText);
                 setTimeout(downloadProgressDoWork, delay);
             }
         }
@@ -37,7 +37,7 @@ function downloadProgressDoWork() {
 }
 
 function downloadProgressComplete() {
-    $('#downloadProgress').css('visibility', 'hidden');
-    setProgressValue($('#downloadProgressbar'), 0);
+    // $('#downloadProgress').css('visibility', 'hidden');
+    // setProgressValue($('#downloadProgressbar'), 0);
     window.location.reload();
 }

@@ -10,6 +10,6 @@
 <p>
     <span id="timer" style="color: #4af; font-size: 150%; font-weight: bold;">${timeRemain}</span>
 </p>
-<script><%@ include file="js/timer-script.js" %></script>
+<script><%@ include file="js/timer.js" %></script>
 </body>
 </html>
