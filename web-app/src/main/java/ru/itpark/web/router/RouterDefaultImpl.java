@@ -63,7 +63,8 @@ public class RouterDefaultImpl implements Router {
                 if (req.getMethod().equals("GET")) {
                     val filename = req.getParameter("remove");
                     if (filename.toLowerCase().equals("all")) {
-                        fileService.removeAll();
+//                        fileService.removeAll();
+                        rfcService.removeAllRfc();
                     } else {
                         fileService.removeFile(filename);
                     }

@@ -23,6 +23,20 @@ public class RfcServiceDefaultImpl implements RfcService {
         return downloadPercent.toString();
     }
 
+    @Override
+    public void cancelDownloading() {
+        if (downloadThread != null && !downloadThread.isInterrupted()) {
+            downloadThread.interrupt();
+            downloadPercent.set(-1);
+        }
+    }
+
+    @Override
+    public void removeAllRfc() {
+        cancelDownloading();
+        fileService.removeAll();
+    }
+
     private List<Integer> parseIntToList(String str) {
         List<Integer> result = new ArrayList<>();
         Arrays.stream(str
@@ -57,11 +71,7 @@ public class RfcServiceDefaultImpl implements RfcService {
         if (downloadPercent.get() != -1) {
             // need to interrupt current working thread
             // and restart task as new
-            if (downloadThread != null && !downloadThread.isInterrupted()) {
-                //TODO: interraption -> independent method
-                //method delete all should interrupt the downloading
-                downloadThread.interrupt();
-            }
+            cancelDownloading();
         }
         downloadPercent.set(0);
         downloadThread = new Thread(() -> {
