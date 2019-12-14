@@ -58,6 +58,8 @@ public class RfcServiceDefaultImpl implements RfcService {
             // need to interrupt current working thread
             // and restart task as new
             if (downloadThread != null && !downloadThread.isInterrupted()) {
+                //TODO: interraption -> independent method
+                //method delete all should interrupt the downloading
                 downloadThread.interrupt();
             }
         }
@@ -69,9 +71,9 @@ public class RfcServiceDefaultImpl implements RfcService {
             for (int i = 0; i < nums.size(); i++) {
                 int index = nums.get(i);
                 String fileName = String.format(fileNameRegex, index);
-                if (fileName.equals("rfc10.txt")) {
-                    Thread.currentThread().interrupt();
-                }
+//                if (fileName.equals("rfc10.txt")) {
+//                    Thread.currentThread().interrupt();
+//                }
                 String url = String.format(urlRegex, index);
                 if (!fileService.downloadFromUrl(url, fileName, false)) {
                     System.out.println("Can not download " + fileName);

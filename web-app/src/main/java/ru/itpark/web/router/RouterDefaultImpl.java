@@ -94,6 +94,12 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
+            if (url.equals("/scriptHandler/downloadProgress")) {
+                val downloadPercent = rfcService.getDownloadPercent();
+                resp.setContentType("text/plain");
+                resp.getWriter().write(downloadPercent);
+                return;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,9 +5,7 @@
     <title>RFC Searcher</title>
     <%@ include file="bootstrap-css.jsp" %>
 </head>
-<%--<body>--%>
-<body onload="hello()">
-
+<body>
 <div class="container">
 
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
@@ -61,13 +59,6 @@
             </form>
         </div>
     </div>
-
-    <%--    <script>--%>
-    <%--        function hello() {--%>
-    <%--            var par = $('#downloadProgress').attr('style');--%>
-    <%--            alert(par);--%>
-    <%--        }--%>
-    <%--    </script>--%>
 
     <% String downloadProgress = (String) request.getAttribute("downloadProgress"); %>
     <% String pval = (downloadProgress != null) ? downloadProgress : "-1"; %>
@@ -148,5 +139,6 @@
 
 <%--<%@ include file="bootstrap-scripts.jsp" %>--%>
 <%@ include file="bootstrap-scripts-old.jsp" %>
+<%@ include file="download-progress-script.jsp" %>
 </body>
 </html>
