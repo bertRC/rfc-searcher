@@ -139,6 +139,6 @@
 
 <%--<%@ include file="bootstrap-scripts.jsp" %>--%>
 <%@ include file="bootstrap-scripts-old.jsp" %>
-<%@ include file="download-progress-script.jsp" %>
+<script><%@ include file="js/download-progress-script.js" %></script>
 </body>
 </html>
