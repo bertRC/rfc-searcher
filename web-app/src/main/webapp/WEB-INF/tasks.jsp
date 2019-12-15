@@ -1,4 +1,3 @@
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -39,70 +38,6 @@
         </div>
     </nav>
 
-    <div class="row">
-        <div class="col">
-            <form action="<%= request.getContextPath() %>" method="post" enctype="multipart/form-data" class="mt-3">
-                <div class="input-group">
-                    <div class="custom-file">
-                        <input type="file" name="rfcFile" multiple="multiple" class="custom-file-input"
-                               id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
-                        <label class="custom-file-label" for="inputGroupFile04">Choose files</label>
-                    </div>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Upload
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <% String downloadProgress = (String) request.getAttribute("downloadProgress"); %>
-    <% String pval = (downloadProgress != null) ? downloadProgress : "-1"; %>
-    <% String visibility = "hidden"; %>
-    <% if (!pval.equals("-1")) {
-        visibility = "visible";
-    } else {
-        pval = "0";
-    }%>
-    <div class="progress" id="downloadProgress" style="visibility: <%= visibility %>">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" id="downloadProgressbar" role="progressbar"
-             aria-valuenow="<%= pval %>"
-             aria-valuemin="0" aria-valuemax="100" style="width: <%= pval %>%"><%= pval %>%
-        </div>
-    </div>
-
-    <% List<String> fileNames = (List<String>) request.getAttribute("rfcFiles"); %>
-    <% if (fileNames != null && !fileNames.isEmpty()) { %>
-    <div class="row" style="margin-top: 16px">
-        <div class="col">
-            <table class="table table-sm" id="fileTable">
-                <thead>
-                <tr>
-                    <th scope="col">Filename</th>
-                    <th scope="col">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% for (String fileName : fileNames) { %>
-                <tr>
-                    <td>
-                        <a href="<%= request.getContextPath()%>/rfc/<%= fileName %>">
-                            <%= fileName %>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<%= request.getContextPath()%>/rfc/?remove=<%= fileName %>">
-                            Remove
-                        </a>
-                    </td>
-                </tr>
-                <% } %>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <% } %>
 </div>
 
 <!-- Modal -->
@@ -135,11 +70,11 @@
 </div>
 
 <%@ include file="script-collection.jsp" %>
-<script>
-    <%@ include file="js/download-progress.js" %>
-</script>
-<script>
-    <%@ include file="js/file-table-init.js" %>
-</script>
+<%--<script>--%>
+<%--    <%@ include file="js/download-progress.js" %>--%>
+<%--</script>--%>
+<%--<script>--%>
+<%--    <%@ include file="js/file-table-init.js" %>--%>
+<%--</script>--%>
 </body>
 </html>

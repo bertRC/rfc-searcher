@@ -20,7 +20,7 @@ public class FrontControllerConfig extends GuiceServletContextListener {
         return Guice.createInjector(new ServletModule() {
             @Override
             protected void configureServlets() {
-                serve("/", "/rfc/*", "/scriptHandler/*").with(FrontController.class);
+                serve("/", "/tasks/", "/rfc/*", "/scriptHandler/*").with(FrontController.class);
                 bind(Router.class).to(RouterDefaultImpl.class);
 //                bind(Router.class).to(RouterSessionInfoImpl.class);
 //                bind(Router.class).to(RouterHelloWorldImpl.class);
