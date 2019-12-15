@@ -3,6 +3,7 @@ package ru.itpark.web.router;
 import com.google.inject.Inject;
 import lombok.val;
 import ru.itpark.file.FileService;
+import ru.itpark.service.DownloadService;
 import ru.itpark.service.RfcService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 public class RouterDefaultImpl implements Router {
     private FileService fileService;
     private RfcService rfcService;
+    private DownloadService downloadService;
 //    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
 
     @Inject
@@ -24,6 +26,11 @@ public class RouterDefaultImpl implements Router {
         this.rfcService = rfcService;
     }
 
+    @Inject
+    public void setDownloadService(DownloadService downloadService) {
+        this.downloadService = downloadService;
+    }
+
     @Override
     public void route(HttpServletRequest req, HttpServletResponse resp) {
         try {
@@ -34,7 +41,7 @@ public class RouterDefaultImpl implements Router {
                 if (req.getMethod().equals("GET")) {
                     val fileNames = fileService.getAll();
                     req.setAttribute("rfcFiles", fileNames);
-                    req.setAttribute("downloadProgress", rfcService.getDownloadPercent());
+                    req.setAttribute("downloadProgress", downloadService.getDownloadPercent());
                     req.getRequestDispatcher("/WEB-INF/newfrontpage.jsp").forward(req, resp);
                     return;
                 }
@@ -72,7 +79,7 @@ public class RouterDefaultImpl implements Router {
                     val filename = req.getParameter("remove");
                     if (filename.toLowerCase().equals("all")) {
 //                        fileService.removeAll();
-                        rfcService.removeAllRfc();
+                        downloadService.removeAllRfc();
                     } else {
                         fileService.removeFile(filename);
                     }
@@ -93,7 +100,7 @@ public class RouterDefaultImpl implements Router {
                 if (url.equals("/rfc/download")) {
                     if (req.getMethod().equals("POST")) {
                         val numbers = req.getParameter("numbers");
-                        rfcService.downloadAllFromUrl(numbers);
+                        downloadService.downloadAllFromUrl(numbers);
                         resp.sendRedirect(rootUrl);
                         return;
                     }
@@ -102,7 +109,7 @@ public class RouterDefaultImpl implements Router {
             }
 
             if (url.equals("/scriptHandler/downloadProgress")) {
-                val downloadPercent = rfcService.getDownloadPercent();
+                val downloadPercent = downloadService.getDownloadPercent();
                 resp.setContentType("text/plain");
                 resp.getWriter().write(downloadPercent);
                 return;
