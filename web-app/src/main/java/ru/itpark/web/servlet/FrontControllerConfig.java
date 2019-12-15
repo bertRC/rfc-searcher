@@ -6,6 +6,8 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import ru.itpark.file.FileService;
 import ru.itpark.file.FileServiceDefaultImpl;
+import ru.itpark.repository.QueryRepository;
+import ru.itpark.repository.QueryRepositorySqliteImpl;
 import ru.itpark.service.RfcService;
 import ru.itpark.service.RfcServiceDefaultImpl;
 import ru.itpark.web.router.Router;
@@ -19,11 +21,12 @@ public class FrontControllerConfig extends GuiceServletContextListener {
             @Override
             protected void configureServlets() {
                 serve("/", "/rfc/*", "/scriptHandler/*").with(FrontController.class);
-//                bind(Router.class).to(RouterDefaultImpl.class);
+                bind(Router.class).to(RouterDefaultImpl.class);
 //                bind(Router.class).to(RouterSessionInfoImpl.class);
-                bind(Router.class).to(RouterHelloWorldImpl.class);
-//                bind(FileService.class).to(FileServiceDefaultImpl.class);
-//                bind(RfcService.class).to(RfcServiceDefaultImpl.class);
+//                bind(Router.class).to(RouterHelloWorldImpl.class);
+                bind(RfcService.class).to(RfcServiceDefaultImpl.class);
+                bind(FileService.class).to(FileServiceDefaultImpl.class);
+                bind(QueryRepository.class).to(QueryRepositorySqliteImpl.class);
             }
         });
     }
