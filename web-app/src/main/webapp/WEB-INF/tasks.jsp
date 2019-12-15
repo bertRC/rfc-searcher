@@ -17,17 +17,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<%= request.getContextPath()%>/tasks/">Tasks</a>
+                    <a class="nav-link" href="<%= request.getContextPath()%>/tasks">Tasks</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+                    <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Files
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="" data-toggle="modal" data-target="#downloadModal">Download From
+                        <a class="dropdown-item" href="/" data-toggle="modal" data-target="#downloadModal">Download From
                             "tools.ietf.org/rfc"</a>
-                        <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc/?remove=all">Delete All</a>
+                        <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc?remove=all">Remove All</a>
                     </div>
                 </li>
             </ul>
@@ -37,6 +37,64 @@
             </form>
         </div>
     </nav>
+
+    <div class="row" style="margin-top: 16px">
+        <div class="col">
+            <table class="table table-sm table-bordered" id="queryTable">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Search Query</th>
+                    <th scope="col">Query Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+<%--                        <span>Some Text</span>--%>
+<%--                        <a href=""></a>--%>
+                        Some Text
+                    </td>
+                    <td>
+                        <div class="progress" style="display: none">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">25%
+                            </div>
+                        </div>
+                        Canceled
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        HTTP Protocol
+                    </td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">25%
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        Cancel
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        TCP Protocol
+                    </td>
+                    <td>
+                        Done
+                    </td>
+                    <td>
+                        Download Results
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </div>
 
@@ -73,8 +131,8 @@
 <%--<script>--%>
 <%--    <%@ include file="js/download-progress.js" %>--%>
 <%--</script>--%>
-<%--<script>--%>
-<%--    <%@ include file="js/file-table-init.js" %>--%>
-<%--</script>--%>
+<script>
+    <%@ include file="js/query-table-init.js" %>
+</script>
 </body>
 </html>

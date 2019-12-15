@@ -18,17 +18,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<%= request.getContextPath()%>/tasks/">Tasks</a>
+                    <a class="nav-link" href="<%= request.getContextPath()%>/tasks">Tasks</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+                    <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Files
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="" data-toggle="modal" data-target="#downloadModal">Download From
+                        <a class="dropdown-item" href="/" data-toggle="modal" data-target="#downloadModal">Download From
                             "tools.ietf.org/rfc"</a>
-                        <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc/?remove=all">Delete All</a>
+                        <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc?remove=all">Remove All</a>
                     </div>
                 </li>
             </ul>
@@ -59,13 +59,13 @@
 
     <% String downloadProgress = (String) request.getAttribute("downloadProgress"); %>
     <% String pval = (downloadProgress != null) ? downloadProgress : "-1"; %>
-    <% String visibility = "hidden"; %>
+    <% String style = "display: none"; %>
     <% if (!pval.equals("-1")) {
-        visibility = "visible";
+        style = "";
     } else {
         pval = "0";
     }%>
-    <div class="progress" id="downloadProgress" style="visibility: <%= visibility %>">
+    <div class="progress" id="downloadProgress" style="<%= style %>">
         <div class="progress-bar progress-bar-striped progress-bar-animated" id="downloadProgressbar" role="progressbar"
              aria-valuenow="<%= pval %>"
              aria-valuemin="0" aria-valuemax="100" style="width: <%= pval %>%"><%= pval %>%
@@ -76,8 +76,8 @@
     <% if (fileNames != null && !fileNames.isEmpty()) { %>
     <div class="row" style="margin-top: 16px">
         <div class="col">
-            <table class="table table-sm" id="fileTable">
-                <thead>
+            <table class="table table-sm table-bordered" id="fileTable">
+                <thead class="thead-light">
                 <tr>
                     <th scope="col">Filename</th>
                     <th scope="col">Action</th>
@@ -92,7 +92,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="<%= request.getContextPath()%>/rfc/?remove=<%= fileName %>">
+                        <a href="<%= request.getContextPath()%>/rfc?remove=<%= fileName %>">
                             Remove
                         </a>
                     </td>
