@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//TODO: Multithreaded implementation
 public class DownloadServiceDefaultImpl implements DownloadService {
     private FileService fileService;
 
