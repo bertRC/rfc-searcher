@@ -18,7 +18,11 @@ public interface FileService {
 
     boolean removeFile(Path path);
 
+    void removeAll(Path dir);
+
     void removeAll();
+
+    void removeAllResults();
 
     boolean downloadFromUrl(String url, String fileName, boolean replaceIfExists);
 }

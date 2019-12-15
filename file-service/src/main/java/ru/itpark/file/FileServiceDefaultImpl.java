@@ -17,6 +17,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class FileServiceDefaultImpl implements FileService {
     private final Path uploadPath;
     private final Path rfcPath;
+    private final Path resultsPath;
 
     static final Comparator<String> proStringComparator = new Comparator<String>() {
         int extractInt(String str) {
@@ -34,7 +35,9 @@ public class FileServiceDefaultImpl implements FileService {
         try {
             uploadPath = Paths.get(System.getenv("UPLOAD_PATH"));
             rfcPath = uploadPath.resolve("rfc");
+            resultsPath = uploadPath.resolve("results");
             Files.createDirectories(rfcPath);
+            Files.createDirectories(resultsPath);
         } catch (IOException e) {
             //TODO: create new exceptions
             throw new RuntimeException(e);
@@ -101,9 +104,9 @@ public class FileServiceDefaultImpl implements FileService {
     }
 
     @Override
-    public void removeAll() {
+    public void removeAll(Path dir) {
         final long startTime = System.currentTimeMillis();
-        try (val paths = Files.walk(rfcPath)) {
+        try (val paths = Files.walk(dir)) {
             paths
                     .filter(Files::isRegularFile)
                     .sorted(Comparator.reverseOrder())
@@ -113,6 +116,16 @@ public class FileServiceDefaultImpl implements FileService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void removeAll() {
+        removeAll(rfcPath);
+    }
+
+    @Override
+    public void removeAllResults() {
+        removeAll(resultsPath);
     }
 
     @Override
