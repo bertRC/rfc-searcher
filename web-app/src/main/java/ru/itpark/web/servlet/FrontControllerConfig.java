@@ -10,11 +10,10 @@ import ru.itpark.repository.QueryRepository;
 import ru.itpark.repository.QueryRepositorySqliteImpl;
 import ru.itpark.service.DownloadService;
 import ru.itpark.service.DownloadServiceDefaultImpl;
-import ru.itpark.service.RfcService;
-import ru.itpark.service.RfcServiceDefaultImpl;
+import ru.itpark.service.SearchService;
+import ru.itpark.service.SearchServiceDefaultImpl;
 import ru.itpark.web.router.Router;
 import ru.itpark.web.router.RouterDefaultImpl;
-import ru.itpark.web.router.RouterHelloWorldImpl;
 
 public class FrontControllerConfig extends GuiceServletContextListener {
     @Override
@@ -25,7 +24,7 @@ public class FrontControllerConfig extends GuiceServletContextListener {
                 serve("/", "/tasks", "/rfc*", "/scriptHandler/*").with(FrontController.class);
                 bind(Router.class).to(RouterDefaultImpl.class);
 //                bind(Router.class).to(RouterHelloWorldImpl.class);
-                bind(RfcService.class).to(RfcServiceDefaultImpl.class);
+                bind(SearchService.class).to(SearchServiceDefaultImpl.class);
                 bind(DownloadService.class).to(DownloadServiceDefaultImpl.class);
                 bind(FileService.class).to(FileServiceDefaultImpl.class);
                 bind(QueryRepository.class).to(QueryRepositorySqliteImpl.class);

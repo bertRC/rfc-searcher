@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import lombok.val;
 import ru.itpark.file.FileService;
 import ru.itpark.service.DownloadService;
-import ru.itpark.service.RfcService;
+import ru.itpark.service.SearchService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class RouterDefaultImpl implements Router {
     private FileService fileService;
-    private RfcService rfcService;
+    private SearchService searchService;
     private DownloadService downloadService;
 //    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
 
@@ -22,8 +22,8 @@ public class RouterDefaultImpl implements Router {
     }
 
     @Inject
-    public void setRfcService(RfcService rfcService) {
-        this.rfcService = rfcService;
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
     }
 
     @Inject

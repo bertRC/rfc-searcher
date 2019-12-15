@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class RfcServiceDefaultImpl implements RfcService {
+public class SearchServiceDefaultImpl implements SearchService {
     private FileService fileService;
     private QueryRepository queryRepository;
 

@@ -4,7 +4,7 @@ import ru.itpark.model.QueryModel;
 
 import java.util.List;
 
-public interface RfcService {
+public interface SearchService {
     List<QueryModel> getAllQueries();
 
     void doSearch(String text);
