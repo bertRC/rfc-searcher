@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 public interface FileService {
+    Path getRfcPath();
+
     String writeFile(Part part);
 
     void writeFiles(List<Part> parts);
@@ -13,6 +15,8 @@ public interface FileService {
     List<String> getAll();
 
     void readFile(String name, PrintWriter printWriter);
+
+    List<String> searchText(String text, Path path);
 
     boolean removeFile(String name);
 

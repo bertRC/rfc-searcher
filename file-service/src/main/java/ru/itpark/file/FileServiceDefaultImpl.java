@@ -5,9 +5,12 @@ import lombok.val;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +48,11 @@ public class FileServiceDefaultImpl implements FileService {
     }
 
     @Override
+    public Path getRfcPath() {
+        return rfcPath;
+    }
+
+    @Override
     public String writeFile(Part part) {
         try {
             String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
@@ -65,6 +73,7 @@ public class FileServiceDefaultImpl implements FileService {
 
     @Override
     public List<String> getAll() {
+        //TODO: walk -> list
         try (val paths = Files.walk(rfcPath)) {
             return paths
                     .filter(Files::isRegularFile)
@@ -87,6 +96,23 @@ public class FileServiceDefaultImpl implements FileService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<String> searchText(String text, Path path) {
+        List<String> result = new ArrayList<>();
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.toLowerCase().contains(text.toLowerCase())) {
+                    result.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            //Thread can be interrupted
+        }
+        return result;
     }
 
     @Override
