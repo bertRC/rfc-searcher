@@ -9,7 +9,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
+//import java.util.UUID;
 
 public class QueryRepositorySqliteImpl implements QueryRepository {
     private JdbcTemplate template = new JdbcTemplate();
@@ -51,23 +51,30 @@ public class QueryRepositorySqliteImpl implements QueryRepository {
     @Override
     public void save(QueryModel queryModel) {
         try {
-            if (queryModel.getId() == null) {
-                String id = UUID.randomUUID().toString();
-                template.update(ds, "INSERT INTO queries(id, query, status) VALUES (?, ?, ?);", stmt -> {
-                    stmt.setString(1, id);
-                    stmt.setString(2, queryModel.getQuery());
-                    stmt.setString(3, queryModel.getStatus().toString());
-                    return stmt;
-                });
-                queryModel.setId(id);
-            } else {
-                template.update(ds, "UPDATE queries SET query = ?, status = ? WHERE id = ?;", stmt -> {
-                    stmt.setString(1, queryModel.getQuery());
-                    stmt.setString(2, queryModel.getStatus().toString());
-                    stmt.setString(3, queryModel.getId());
-                    return stmt;
-                });
-            }
+            template.update(ds, "INSERT INTO queries(id, query, status) VALUES (?, ?, ?);", stmt -> {
+                stmt.setString(1, queryModel.getId());
+                stmt.setString(2, queryModel.getQuery());
+                stmt.setString(3, queryModel.getStatus().toString());
+                return stmt;
+            });
+
+//            if (queryModel.getId() == null) {
+//                String id = UUID.randomUUID().toString();
+//                template.update(ds, "INSERT INTO queries(id, query, status) VALUES (?, ?, ?);", stmt -> {
+//                    stmt.setString(1, id);
+//                    stmt.setString(2, queryModel.getQuery());
+//                    stmt.setString(3, queryModel.getStatus().toString());
+//                    return stmt;
+//                });
+//                queryModel.setId(id);
+//            } else {
+//                template.update(ds, "UPDATE queries SET query = ?, status = ? WHERE id = ?;", stmt -> {
+//                    stmt.setString(1, queryModel.getQuery());
+//                    stmt.setString(2, queryModel.getStatus().toString());
+//                    stmt.setString(3, queryModel.getId());
+//                    return stmt;
+//                });
+//            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

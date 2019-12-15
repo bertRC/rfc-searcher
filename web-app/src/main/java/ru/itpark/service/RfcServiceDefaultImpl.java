@@ -1,21 +1,54 @@
 package ru.itpark.service;
 
 import com.google.inject.Inject;
+import ru.itpark.enumeration.QueryStatus;
 import ru.itpark.file.FileService;
+import ru.itpark.model.QueryModel;
+import ru.itpark.repository.QueryRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RfcServiceDefaultImpl implements RfcService {
     private FileService fileService;
+    private QueryRepository queryRepository;
+    //    private final List<QueryModel> currentQueries = new LinkedList<>();
+    private final BlockingDeque<QueryModel> currentQueries = new LinkedBlockingDeque<>();
+
     private Thread downloadThread;
+    private Thread searchThread;
     private final AtomicInteger downloadPercent = new AtomicInteger(-1); // -1 means that there is no downloading progress right now
 
     @Inject
-    public void setFileService(FileService fileService) {
-        this.fileService = fileService;
+    public void setFileService(FileService fService) {
+        fileService = fService;
+        fileService.removeAllResults();
+    }
+
+    @Inject
+    public void setQueryRepository(QueryRepository qRepository) {
+        queryRepository = qRepository;
+        queryRepository.init();
+    }
+
+    @Override
+    public List<QueryModel> getAllQueries() {
+        List<QueryModel> result = new LinkedList<>(currentQueries);
+        result.addAll(queryRepository.getAll());
+        return result;
+    }
+
+    @Override
+    public void doSearch(String text) {
+        currentQueries.addFirst(new QueryModel(
+                UUID.randomUUID().toString(),
+                text,
+                QueryStatus.ENQUEUED));
+        if (searchThread == null || !searchThread.isAlive()) {
+            //можно делать работу, а иначе запрос просто повисит в currentQueries
+        }
     }
 
     @Override
@@ -68,7 +101,8 @@ public class RfcServiceDefaultImpl implements RfcService {
     @Override
     public void downloadAllFromUrl(String numbers) {
         long startTime = System.currentTimeMillis();
-        if (downloadPercent.get() != -1) {
+//        if (downloadPercent.get() != -1) {
+        if (downloadThread != null && downloadThread.isAlive()) {
             // need to interrupt current working thread
             // and restart task as new
             cancelDownloading();
@@ -100,5 +134,4 @@ public class RfcServiceDefaultImpl implements RfcService {
         });
         downloadThread.start();
     }
-
 }
