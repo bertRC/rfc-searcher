@@ -1,4 +1,5 @@
 package ru.itpark.util;
+//TODO: check all imports
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -22,6 +23,26 @@ public class JdbcTemplate {
             List<T> list = new LinkedList<>();
             while (resultSet.next()) {
                 list.add(mapper.map(resultSet));
+            }
+            return list;
+        });
+    }
+
+    public <T> List<T> queryForListReverseOrder(DataSource dataSource, String query, RowMapper<T> mapper) throws SQLException {
+        return execute(dataSource, query, (Executable<List<T>>) resultSet -> {
+            List<T> list = new LinkedList<>();
+            while (resultSet.next()) {
+                list.add(0, mapper.map(resultSet));
+            }
+            return list;
+        });
+    }
+
+    public <T> List<T> queryForListReverseOrder(DataSource dataSource, String query, RowMapper<T> mapper, PreparedStatementSetter setter) throws SQLException {
+        return execute(dataSource, query, setter, resultSet -> {
+            List<T> list = new LinkedList<>();
+            while (resultSet.next()) {
+                list.add(0, mapper.map(resultSet));
             }
             return list;
         });
