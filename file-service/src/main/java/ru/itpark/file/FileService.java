@@ -8,6 +8,12 @@ import java.util.List;
 public interface FileService {
     Path getRfcPath();
 
+    Path getResultPath();
+
+    void writeResultFile(String filename, String query, List<String> lines);
+
+    void writeResultFile(Path file, String query, List<String> lines);
+
     String writeFile(Part part);
 
     void writeFiles(List<Part> parts);
