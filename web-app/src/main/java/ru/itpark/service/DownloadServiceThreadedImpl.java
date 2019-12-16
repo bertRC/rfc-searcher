@@ -10,11 +10,12 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+//TODO: download cancel button
 public class DownloadServiceThreadedImpl implements DownloadService {
     private FileService fileService;
 
-    private final ExecutorService downloadThreadPool = Executors.newFixedThreadPool(10);
-    private List<CompletableFuture<Void>> downloadFutures;
+    private final ExecutorService pool = Executors.newFixedThreadPool(10); //TODO: number of threads
+    private List<CompletableFuture<Void>> futures;
     private final AtomicInteger tasksCompleted = new AtomicInteger(0);
     private final AtomicInteger tasksCount = new AtomicInteger(0);
 
@@ -30,8 +31,8 @@ public class DownloadServiceThreadedImpl implements DownloadService {
 
     @Override
     public void cancelDownloading() {
-        if (downloadFutures != null) {
-            downloadFutures.forEach(future -> future.cancel(false));
+        if (futures != null) {
+            futures.forEach(future -> future.cancel(false));
         }
         tasksCount.set(0);
         tasksCompleted.set(0);
@@ -77,7 +78,7 @@ public class DownloadServiceThreadedImpl implements DownloadService {
                 System.out.println("Can not download " + fileName);
             }
             tasksCompleted.incrementAndGet();
-        }, downloadThreadPool);
+        }, pool);
     }
 
     @Override
@@ -90,13 +91,12 @@ public class DownloadServiceThreadedImpl implements DownloadService {
         final List<Integer> nums = parseIntToList(numbers);
         tasksCompleted.set(0);
         tasksCount.set(nums.size());
-        downloadFutures = nums.stream().map(i -> {
+        futures = nums.stream().map(i -> {
             String fileName = String.format(fileNameRegex, i);
             String url = String.format(urlRegex, i);
             return downloadOneFuture(url, fileName, replaceIfExists);
         }).collect(Collectors.toList());
-        System.out.println(downloadFutures);
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(downloadFutures.toArray(new CompletableFuture[0]));
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRun(() -> {
             long duration = System.currentTimeMillis() - startTime;
             System.out.println("Downloading took " + duration + " milliseconds");
