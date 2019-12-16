@@ -7,5 +7,5 @@ public interface DownloadService {
 
     void removeAllRfc();
 
-    void downloadAllFromUrl(String numbers);
+    void downloadAllFromUrl(String numbers, boolean replaceIfExists);
 }

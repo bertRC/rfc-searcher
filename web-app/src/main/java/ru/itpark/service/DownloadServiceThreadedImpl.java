@@ -6,13 +6,17 @@ import ru.itpark.file.FileService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-public class DownloadServiceDefaultImpl implements DownloadService {
+public class DownloadServiceThreadedImpl implements DownloadService {
     private FileService fileService;
 
-    private Thread downloadThread;
-    private final AtomicInteger downloadPercent = new AtomicInteger(-1); // -1 means that there is no downloading progress right now
+    private final ExecutorService downloadThreadPool = Executors.newFixedThreadPool(10);
+    private List<CompletableFuture<Void>> downloadFutures;
+    private final AtomicInteger tasksCompleted = new AtomicInteger(0);
+    private final AtomicInteger tasksCount = new AtomicInteger(0);
 
     @Inject
     public void setFileService(FileService fileService) {
@@ -21,15 +25,16 @@ public class DownloadServiceDefaultImpl implements DownloadService {
 
     @Override
     public String getDownloadPercent() {
-        return downloadPercent.toString();
+        return (tasksCount.get() == 0) ? "-1" : String.valueOf(100 * tasksCompleted.get() / tasksCount.get());
     }
 
     @Override
     public void cancelDownloading() {
-        if (downloadThread != null && !downloadThread.isInterrupted()) {
-            downloadThread.interrupt();
-            downloadPercent.set(-1);
+        if (downloadFutures != null) {
+            downloadFutures.forEach(future -> future.cancel(false));
         }
+        tasksCount.set(0);
+        tasksCompleted.set(0);
     }
 
     @Override
@@ -66,36 +71,37 @@ public class DownloadServiceDefaultImpl implements DownloadService {
         return result;
     }
 
+    private CompletableFuture<Void> downloadOneFuture(String url, String fileName, boolean replaceIfExists) {
+        return CompletableFuture.runAsync(() -> {
+            if (!fileService.downloadFromUrl(url, fileName, replaceIfExists)) {
+                System.out.println("Can not download " + fileName);
+            }
+            tasksCompleted.incrementAndGet();
+        }, downloadThreadPool);
+    }
+
     @Override
     public void downloadAllFromUrl(String numbers, boolean replaceIfExists) {
+        System.out.println("Starting download...");
         long startTime = System.currentTimeMillis();
-        if (downloadThread != null && downloadThread.isAlive()) {
-            // need to interrupt current working thread
-            // and restart task as new
-            cancelDownloading();
-        }
-        downloadPercent.set(0);
-        downloadThread = new Thread(() -> {
-            final String urlRegex = "https://tools.ietf.org/rfc/rfc%d.txt";
-            final String fileNameRegex = "rfc%d.txt";
-            final List<Integer> nums = parseIntToList(numbers);
-            for (int i = 0; i < nums.size(); i++) {
-                int index = nums.get(i);
-                String fileName = String.format(fileNameRegex, index);
-                String url = String.format(urlRegex, index);
-                if (!fileService.downloadFromUrl(url, fileName, replaceIfExists)) {
-                    System.out.println("Can not download " + fileName);
-                }
-                downloadPercent.set(100 * i / nums.size());
-                if (Thread.currentThread().isInterrupted()) {
-                    System.out.println("Downloading was canceled on file: " + fileName);
-                    break;
-                }
-            }
+        cancelDownloading();
+        final String urlRegex = "https://tools.ietf.org/rfc/rfc%d.txt";
+        final String fileNameRegex = "rfc%d.txt";
+        final List<Integer> nums = parseIntToList(numbers);
+        tasksCompleted.set(0);
+        tasksCount.set(nums.size());
+        downloadFutures = nums.stream().map(i -> {
+            String fileName = String.format(fileNameRegex, i);
+            String url = String.format(urlRegex, i);
+            return downloadOneFuture(url, fileName, replaceIfExists);
+        }).collect(Collectors.toList());
+        System.out.println(downloadFutures);
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(downloadFutures.toArray(new CompletableFuture[0]));
+        allFutures.thenRun(() -> {
             long duration = System.currentTimeMillis() - startTime;
             System.out.println("Downloading took " + duration + " milliseconds");
-            downloadPercent.set(-1);
+            tasksCount.set(0);
+            tasksCompleted.set(0);
         });
-        downloadThread.start();
     }
 }

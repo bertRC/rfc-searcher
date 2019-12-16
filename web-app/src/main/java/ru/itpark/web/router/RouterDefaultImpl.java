@@ -100,7 +100,7 @@ public class RouterDefaultImpl implements Router {
                 if (url.equals("/rfc/download")) {
                     if (req.getMethod().equals("POST")) {
                         val numbers = req.getParameter("numbers");
-                        downloadService.downloadAllFromUrl(numbers);
+                        downloadService.downloadAllFromUrl(numbers, false);
                         resp.sendRedirect(rootUrl);
                         return;
                     }
