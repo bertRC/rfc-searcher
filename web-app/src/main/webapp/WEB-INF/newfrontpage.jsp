@@ -17,9 +17,6 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="<%= request.getContextPath()%>/tasks">Tasks</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -31,9 +28,13 @@
                         <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc?remove=all">Remove All</a>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<%= request.getContextPath()%>/tasks">Tasks</a>
+                </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="<%= request.getContextPath() %>/search">
-                <input name="text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                <input name="text" class="form-control mr-sm-2" style="width: 250px" type="search" placeholder="Search"
+                       aria-label="Search"
                        pattern=".{3,}" required title="3 characters minimum" autofocus>
                 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
             </form>
@@ -67,12 +68,22 @@
     } else {
         pval = "0";
     }%>
-    <div class="progress" id="downloadProgress" style="<%= style %>">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" id="downloadProgressbar" role="progressbar"
-             aria-valuenow="<%= pval %>"
-             aria-valuemin="0" aria-valuemax="100" style="width: <%= pval %>%"><%= pval %>%
+    <form action="<%= request.getContextPath() %>/rfc/cancel" method="post">
+        <div class="row align-items-center" id="downloadProgress" style="<%= style %>">
+            <div class="col">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="downloadProgressbar"
+                         role="progressbar"
+                         aria-valuenow="<%= pval %>"
+                         aria-valuemin="0" aria-valuemax="100" style="width: <%= pval %>%"><%= pval %>%
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">Cancel</button>
+            </div>
         </div>
-    </div>
+    </form>
 
     <% List<String> fileNames = (List<String>) request.getAttribute("rfcFiles"); %>
     <% if (fileNames != null && !fileNames.isEmpty()) { %>
@@ -110,7 +121,7 @@
 <!-- Modal -->
 <div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
-    <form action="<%= request.getContextPath() %>/rfc/download" method="post" enctype="multipart/form-data">
+    <form action="<%= request.getContextPath() %>/rfc/download" method="post">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
