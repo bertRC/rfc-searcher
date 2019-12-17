@@ -1,3 +1,6 @@
+<%@ page import="ru.itpark.model.QueryModel" %>
+<%@ page import="java.util.List" %>
+<%@ page import="ru.itpark.enumeration.QueryStatus" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -31,13 +34,16 @@
                     </div>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" autofocus>
+            <form class="form-inline my-2 my-lg-0" action="<%= request.getContextPath() %>/search">
+                <input name="text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                       pattern=".{3,}" required title="3 characters minimum" autofocus>
                 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
     </nav>
 
+    <% List<QueryModel> queries = (List<QueryModel>) request.getAttribute("queries"); %>
+    <% if (queries != null && !queries.isEmpty()) { %>
     <div class="row" style="margin-top: 16px">
         <div class="col">
             <table class="table table-sm table-bordered" id="queryTable">
@@ -49,53 +55,31 @@
                 </tr>
                 </thead>
                 <tbody>
+                <% for (QueryModel query : queries) { %>
                 <tr>
-                    <td>
-<%--                        <span>Some Text</span>--%>
-<%--                        <a href=""></a>--%>
-                        Some Text
+                    <td><%= query.getQuery() %>
+                    </td>
+                    <td><%= query.getStatus() %>
+                        <%--                        <div class="progress" style="display: none">--%>
+                        <%--                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"--%>
+                        <%--                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">25%--%>
+                        <%--                            </div>--%>
+                        <%--                        </div>--%>
                     </td>
                     <td>
-                        <div class="progress" style="display: none">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">25%
-                            </div>
-                        </div>
-                        Canceled
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        HTTP Protocol
-                    </td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">25%
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        Cancel
+                        <% if (query.getStatus() == QueryStatus.DONE) { %>
+                        <a href="<%= request.getContextPath()%>/results/<%= query.getId() + ".txt" %>">
+                            Download Results
+                        </a>
+                        <% } %>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        TCP Protocol
-                    </td>
-                    <td>
-                        Done
-                    </td>
-                    <td>
-                        Download Results
-                    </td>
-                </tr>
+                <% } %>
                 </tbody>
             </table>
         </div>
     </div>
-
+    <% } %>
 </div>
 
 <!-- Modal -->

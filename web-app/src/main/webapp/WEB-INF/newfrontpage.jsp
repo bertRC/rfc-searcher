@@ -32,8 +32,9 @@
                     </div>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" autofocus>
+            <form class="form-inline my-2 my-lg-0" action="<%= request.getContextPath() %>/search">
+                <input name="text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                       pattern=".{3,}" required title="3 characters minimum" autofocus>
                 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
@@ -41,7 +42,8 @@
 
     <div class="row">
         <div class="col">
-            <form action="<%= request.getContextPath() %>" method="post" enctype="multipart/form-data" class="mt-3">
+            <form action="<%= request.getContextPath() %>" method="post" enctype="multipart/form-data"
+                  accept-charset="UTF-8" class="mt-3">
                 <div class="input-group">
                     <div class="custom-file">
                         <input type="file" name="rfcFile" multiple="multiple" class="custom-file-input"
