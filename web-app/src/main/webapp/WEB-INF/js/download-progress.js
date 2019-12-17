@@ -1,4 +1,4 @@
-const delay = 500;
+const delay = 200;
 
 $(document).ready(downloadProgressInit());
 
