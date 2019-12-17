@@ -15,6 +15,8 @@ public class RouterDefaultImpl implements Router {
     private SearchService searchService;
     private DownloadService downloadService;
 //    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
+//    TODO: regex
+    //TODO: Tasks Files -> Files Tasks navbar
 
     @Inject
     public void setFileService(FileService fileService) {
@@ -34,8 +36,6 @@ public class RouterDefaultImpl implements Router {
     @Override
     public void route(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.setCharacterEncoding("UTF-8");
-            resp.setCharacterEncoding("UTF-8");
             val rootUrl = req.getContextPath().isEmpty() ? "/" : req.getContextPath();
             val url = req.getRequestURI().substring(req.getContextPath().length());
 
@@ -117,9 +117,6 @@ public class RouterDefaultImpl implements Router {
                     val text = req.getParameter("text");
                     //TODO: search
                     searchService.search(text);
-//                    val queries = searchService.getAllQueries();
-//                    req.setAttribute("queries", queries);
-//                    req.getRequestDispatcher("/WEB-INF/tasks.jsp").forward(req, resp);
                     resp.sendRedirect("/tasks");
                     return;
                 }

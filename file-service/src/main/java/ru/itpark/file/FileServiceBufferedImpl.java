@@ -74,7 +74,7 @@ public class FileServiceBufferedImpl implements FileService {
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -113,8 +113,6 @@ public class FileServiceBufferedImpl implements FileService {
 
     @Override
     public void readFile(Path file, PrintWriter printWriter) {
-//        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
-//            lines.forEach(printWriter::println);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile()), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -139,16 +137,6 @@ public class FileServiceBufferedImpl implements FileService {
     public List<String> searchText(String text, Path path) {
         String filename = rfcPath.relativize(path).toString();
         List<String> result = new ArrayList<>();
-//        try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
-//            int lineNumber = 1;
-//            final Iterator<String> iterator = lines.iterator();
-//            while (iterator.hasNext()) {
-//                String line = iterator.next();
-//                if (line.toLowerCase().contains(text.toLowerCase())) {
-//                    result.add("[" + filename + " Line: " + lineNumber + "]: " + line);
-//                }
-//                lineNumber++;
-//            }
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8))) {
             int lineNumber = 1;
             String line;
