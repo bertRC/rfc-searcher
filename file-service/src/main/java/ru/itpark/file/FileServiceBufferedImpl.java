@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class FileServiceDefaultImpl implements FileService {
+public class FileServiceBufferedImpl implements FileService {
     private final Path uploadPath;
     private final Path rfcPath;
     private final Path resultsPath;
@@ -35,7 +35,7 @@ public class FileServiceDefaultImpl implements FileService {
         }
     };
 
-    public FileServiceDefaultImpl() {
+    public FileServiceBufferedImpl() {
         try {
             uploadPath = Paths.get(System.getenv("UPLOAD_PATH"));
             rfcPath = uploadPath.resolve("rfc");
@@ -65,7 +65,8 @@ public class FileServiceDefaultImpl implements FileService {
 
     @Override
     public void writeResultFile(Path file, String query, List<String> lines) {
-        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+//        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.toFile()), StandardCharsets.UTF_8))) {
             writer.write("[Query Text]: " + query);
             writer.newLine();
             for (String line : lines) {
@@ -112,8 +113,13 @@ public class FileServiceDefaultImpl implements FileService {
 
     @Override
     public void readFile(Path file, PrintWriter printWriter) {
-        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8) ) {
-            lines.forEach(printWriter::println);
+//        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
+//            lines.forEach(printWriter::println);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile()), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                printWriter.println(line);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -133,11 +139,20 @@ public class FileServiceDefaultImpl implements FileService {
     public List<String> searchText(String text, Path path) {
         String filename = rfcPath.relativize(path).toString();
         List<String> result = new ArrayList<>();
-        try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
+//        try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
+//            int lineNumber = 1;
+//            final Iterator<String> iterator = lines.iterator();
+//            while (iterator.hasNext()) {
+//                String line = iterator.next();
+//                if (line.toLowerCase().contains(text.toLowerCase())) {
+//                    result.add("[" + filename + " Line: " + lineNumber + "]: " + line);
+//                }
+//                lineNumber++;
+//            }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8))) {
             int lineNumber = 1;
-            final Iterator<String> iterator = lines.iterator();
-            while (iterator.hasNext()) {
-                String line = iterator.next();
+            String line;
+            while ((line = reader.readLine()) != null) {
                 if (line.toLowerCase().contains(text.toLowerCase())) {
                     result.add("[" + filename + " Line: " + lineNumber + "]: " + line);
                 }
