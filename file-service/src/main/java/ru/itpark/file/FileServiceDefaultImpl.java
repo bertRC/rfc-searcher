@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,7 +66,7 @@ public class FileServiceDefaultImpl implements FileService {
 
     @Override
     public void writeResultFile(Path file, String query, List<String> lines) {
-        try (BufferedWriter writer = Files.newBufferedWriter(file)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
             writer.write("[Query Text]: " + query);
             writer.newLine();
             for (String line : lines) {
@@ -111,8 +112,8 @@ public class FileServiceDefaultImpl implements FileService {
     }
 
     @Override
-    public void readFile(String name, PrintWriter printWriter) {
-        try (Stream<String> lines = Files.lines(rfcPath.resolve(name))) {
+    public void readFile(Path file, PrintWriter printWriter) {
+        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8) ) {
             lines.forEach(printWriter::println);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -120,25 +121,31 @@ public class FileServiceDefaultImpl implements FileService {
     }
 
     @Override
+    public void readRfcFile(String name, PrintWriter printWriter) {
+        readFile(rfcPath.resolve(name), printWriter);
+    }
+
+    @Override
+    public void readResultsFile(String name, PrintWriter printWriter) {
+        readFile(resultsPath.resolve(name), printWriter);
+    }
+
+    @Override
     public List<String> searchText(String text, Path path) {
-        List<String> result = null;
-        try (Stream<String> lines = Files.lines(path)) {
-            result = lines.filter(line -> line.toLowerCase().contains(text.toLowerCase()))
-                    .map(line -> {
-                        String filename = rfcPath.relativize(path).toString();
-                        return "[" + filename + "]: " + line;
-                    }).collect(Collectors.toList());
-//        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                if (line.toLowerCase().contains(text.toLowerCase())) {
-//                    String filename = rfcPath.relativize(path).toString();
-//                    result.add("[" + filename + "]: " + line);
-//                }
-//            }
+        String filename = rfcPath.relativize(path).toString();
+        List<String> result = new ArrayList<>();
+        try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
+            int lineNumber = 1;
+            final Iterator<String> iterator = lines.iterator();
+            while (iterator.hasNext()) {
+                String line = iterator.next();
+                if (line.toLowerCase().contains(text.toLowerCase())) {
+                    result.add("[" + filename + " Line: " + lineNumber + "]: " + line);
+                }
+                lineNumber++;
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            //Thread can be interrupted
         }
         return result;
     }
@@ -190,7 +197,6 @@ public class FileServiceDefaultImpl implements FileService {
                 Files.copy(in, filePath, REPLACE_EXISTING);
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
                 if (Thread.currentThread().isInterrupted()) {
 //                     trying to delete last damaged file
                     removeFile(fileName);

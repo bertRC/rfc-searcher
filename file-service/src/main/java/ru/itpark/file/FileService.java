@@ -20,7 +20,11 @@ public interface FileService {
 
     List<String> getAll();
 
-    void readFile(String name, PrintWriter printWriter);
+    void readFile(Path file, PrintWriter printWriter);
+
+    void readRfcFile(String name, PrintWriter printWriter);
+
+    void readResultsFile(String name, PrintWriter printWriter);
 
     List<String> searchText(String text, Path path);
 
