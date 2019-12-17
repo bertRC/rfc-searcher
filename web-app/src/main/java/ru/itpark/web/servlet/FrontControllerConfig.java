@@ -9,6 +9,7 @@ import ru.itpark.file.FileServiceBufferedImpl;
 import ru.itpark.file.FileServiceDefaultImpl;
 import ru.itpark.repository.QueryRepository;
 import ru.itpark.repository.QueryRepositorySqliteImpl;
+import ru.itpark.repository.QueryRepositorySqliteSynchronizedImpl;
 import ru.itpark.service.*;
 import ru.itpark.web.router.Router;
 import ru.itpark.web.router.RouterDefaultImpl;
@@ -27,7 +28,8 @@ public class FrontControllerConfig extends GuiceServletContextListener {
                 bind(DownloadService.class).to(DownloadServiceThreadedImpl.class);
 //                bind(FileService.class).to(FileServiceDefaultImpl.class);
                 bind(FileService.class).to(FileServiceBufferedImpl.class);
-                bind(QueryRepository.class).to(QueryRepositorySqliteImpl.class);
+//                bind(QueryRepository.class).to(QueryRepositorySqliteImpl.class);
+                bind(QueryRepository.class).to(QueryRepositorySqliteSynchronizedImpl.class);
             }
         });
     }
