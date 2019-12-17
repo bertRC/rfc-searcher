@@ -109,6 +109,13 @@ public class RouterDefaultImpl implements Router {
                         return;
                     }
                 }
+                if (url.equals("/rfc/cancel")) {
+                    if (req.getMethod().equals("POST")) {
+                        downloadService.cancelDownloading();
+                        resp.sendRedirect(rootUrl);
+                        return;
+                    }
+                }
                 throw new RuntimeException();
             }
 
