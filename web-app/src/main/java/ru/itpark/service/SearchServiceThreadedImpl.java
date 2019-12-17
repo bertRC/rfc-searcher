@@ -47,21 +47,35 @@ public class SearchServiceThreadedImpl implements SearchService {
     @Override
     public List<QueryModel> getAllQueries() {
         List<QueryModel> result = new LinkedList<>(currentQueries);
+        System.out.println("Getting all from Repository " + System.currentTimeMillis());
         result.addAll(queryRepository.getAll());
+        System.out.println("Getting done " + System.currentTimeMillis());
         return result;
     }
 
     private CompletableFuture<List<String>> searchOneFuture(String text, Path file) {
         return CompletableFuture.supplyAsync(() -> {
             //TODO: progress
-            //TODO: [rfc1945.txt] add
-            //Done it in fileService
             return fileService.searchText(text, file);
-        }, pool);
+        }, pool)
+                .exceptionally(e -> {
+                    System.out.println("Some error happened in file: " + file.toString());
+                    System.out.println(e.getMessage());
+                    return null;
+//                .handle((res, ex) -> {
+//                    if (ex != null) {
+//                        System.out.println("Some error happened in file: " + file.toString());
+//                        System.out.println(ex.getMessage());
+//                        return null;
+//                    }
+//                    return res;
+                });
     }
 
     @Override
     public void search(String text) {
+        System.out.println("Starting search: " + text);
+        long startTime = System.currentTimeMillis();
         QueryModel queryModel = new QueryModel(UUID.randomUUID().toString(), text, QueryStatus.INPROGRESS);
         currentQueries.addFirst(queryModel);
         //TODO: progress
@@ -80,12 +94,21 @@ public class SearchServiceThreadedImpl implements SearchService {
                 //TODO: запись в БД
                 //TODO: завершить прогресс
                 List<String> result = new LinkedList<>();
-                queryFutures.forEach(future -> result.addAll(future.join()));
-                fileService.writeResultFile(queryModel.getId(), text, result);
+                queryFutures.forEach(future -> {
+                    List<String> list = future.join();
+                    if (list != null) {
+                        result.addAll(future.join());
+                    }
+                });
+                fileService.writeResultFile(queryModel.getId() + ".txt", text, result);
                 currentQueries.remove(queryModel);
                 queryModel.setStatus(QueryStatus.DONE);
+                System.out.println("Saving to Repository " + System.currentTimeMillis());
                 queryRepository.save(queryModel);
+                System.out.println("Saving done " + System.currentTimeMillis());
                 globalFutures.remove(queryModel.getId());
+                long duration = System.currentTimeMillis() - startTime;
+                System.out.println("Searching took " + duration + " milliseconds");
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
