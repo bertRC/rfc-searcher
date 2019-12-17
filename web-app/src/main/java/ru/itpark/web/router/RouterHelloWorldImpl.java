@@ -19,7 +19,7 @@ public class RouterHelloWorldImpl implements Router {
 
             if (url.equals("/")) {
                 if (req.getMethod().equals("GET")) {
-                    String finalDateString = "2019/12/20 08:00:00"; //1d 3h correction
+                    String finalDateString = "2019/12/20 09:30:00"; //1d 3h correction
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     SimpleDateFormat sdf1 = new SimpleDateFormat("d");
                     SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");

@@ -13,6 +13,7 @@ import ru.itpark.repository.QueryRepositorySqliteSynchronizedImpl;
 import ru.itpark.service.*;
 import ru.itpark.web.router.Router;
 import ru.itpark.web.router.RouterDefaultImpl;
+import ru.itpark.web.router.RouterHelloWorldImpl;
 
 public class FrontControllerConfig extends GuiceServletContextListener {
     @Override
@@ -21,15 +22,15 @@ public class FrontControllerConfig extends GuiceServletContextListener {
             @Override
             protected void configureServlets() {
                 serve("/", "/tasks", "/search", "/rfc*", "/results*", "/scriptHandler/*").with(FrontController.class);
-                bind(Router.class).to(RouterDefaultImpl.class);
-//                bind(Router.class).to(RouterHelloWorldImpl.class);
-                bind(SearchService.class).to(SearchServiceThreadedImpl.class);
-//                bind(DownloadService.class).to(DownloadServiceDefaultImpl.class);
-                bind(DownloadService.class).to(DownloadServiceThreadedImpl.class);
-//                bind(FileService.class).to(FileServiceDefaultImpl.class);
-                bind(FileService.class).to(FileServiceBufferedImpl.class);
-//                bind(QueryRepository.class).to(QueryRepositorySqliteImpl.class);
-                bind(QueryRepository.class).to(QueryRepositorySqliteSynchronizedImpl.class);
+//                bind(Router.class).to(RouterDefaultImpl.class);
+                bind(Router.class).to(RouterHelloWorldImpl.class);
+//                bind(SearchService.class).to(SearchServiceThreadedImpl.class);
+////                bind(DownloadService.class).to(DownloadServiceDefaultImpl.class);
+//                bind(DownloadService.class).to(DownloadServiceThreadedImpl.class);
+////                bind(FileService.class).to(FileServiceDefaultImpl.class);
+//                bind(FileService.class).to(FileServiceBufferedImpl.class);
+////                bind(QueryRepository.class).to(QueryRepositorySqliteImpl.class);
+//                bind(QueryRepository.class).to(QueryRepositorySqliteSynchronizedImpl.class);
             }
         });
     }
