@@ -26,8 +26,8 @@
         <servlet-class>ru.itpark.web.servlet.FrontController</servlet-class>
         <load-on-startup>1</load-on-startup>
         <multipart-config>
-            <max-file-size>10485760</max-file-size>
-            <max-request-size>10485760</max-request-size>
+            <max-file-size>104857600</max-file-size>
+            <max-request-size>104857600</max-request-size>
             <file-size-threshold>1048576</file-size-threshold>
         </multipart-config>
     </servlet>
