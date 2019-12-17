@@ -29,6 +29,20 @@ public class SearchServiceThreadedImpl implements SearchService {
 
     private final Deque<QueryModel> currentQueries = new ConcurrentLinkedDeque<>();
 
+    //TODO: comparators to util class
+    static final Comparator<String> resultsComparator = new Comparator<String>() {
+        int extractFirstInt(String str) {
+            int index = str.indexOf("Line");
+            String num = index != -1 ? str.substring(0, index).replaceAll("\\D", "") : "";
+            return num.isEmpty() ? 0 : Integer.parseInt(num);
+        }
+
+        @Override
+        public int compare(String o1, String o2) {
+            return extractFirstInt(o1) - extractFirstInt(o2);
+        }
+    };
+
     @Inject
     public void setFileService(FileService fService) {
         fileService = fService;
@@ -52,6 +66,12 @@ public class SearchServiceThreadedImpl implements SearchService {
     private CompletableFuture<List<String>> searchOneFuture(String text, Path file) {
         return CompletableFuture.supplyAsync(() -> {
             //TODO: progress
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //TODO: remove this ^
             return fileService.searchText(text, file);
         }, pool)
                 .exceptionally(e -> {
@@ -89,7 +109,7 @@ public class SearchServiceThreadedImpl implements SearchService {
                         result.addAll(future.join());
                     }
                 });
-                //sort
+                result.sort(resultsComparator);
                 fileService.writeResultFile(queryModel.getId() + ".txt", text, result);
                 currentQueries.remove(queryModel);
                 queryModel.setStatus(QueryStatus.DONE);
