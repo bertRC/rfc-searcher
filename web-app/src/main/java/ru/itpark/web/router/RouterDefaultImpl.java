@@ -34,6 +34,8 @@ public class RouterDefaultImpl implements Router {
     @Override
     public void route(HttpServletRequest req, HttpServletResponse resp) {
         try {
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
             val rootUrl = req.getContextPath().isEmpty() ? "/" : req.getContextPath();
             val url = req.getRequestURI().substring(req.getContextPath().length());
 
@@ -68,6 +70,8 @@ public class RouterDefaultImpl implements Router {
 
             if (url.equals("/tasks")) {
                 if (req.getMethod().equals("GET")) {
+                    val queries = searchService.getAllQueries();
+                    req.setAttribute("queries", queries);
                     req.getRequestDispatcher("/WEB-INF/tasks.jsp").forward(req, resp);
                     return;
                 }
@@ -93,7 +97,7 @@ public class RouterDefaultImpl implements Router {
                 if (req.getMethod().equals("GET")) {
                     resp.setContentType("text/plain;charset=utf-8");
                     val filename = url.substring("/rfc/".length());
-                    fileService.readFile(filename, resp.getWriter());
+                    fileService.readRfcFile(filename, resp.getWriter());
                     return;
                 }
 
@@ -104,6 +108,30 @@ public class RouterDefaultImpl implements Router {
                         resp.sendRedirect(rootUrl);
                         return;
                     }
+                }
+                throw new RuntimeException();
+            }
+
+            if (url.equals("/search")) {
+                if (req.getMethod().equals("GET")) {
+                    val text = req.getParameter("text");
+                    //TODO: search
+                    searchService.search(text);
+//                    val queries = searchService.getAllQueries();
+//                    req.setAttribute("queries", queries);
+//                    req.getRequestDispatcher("/WEB-INF/tasks.jsp").forward(req, resp);
+                    resp.sendRedirect("/tasks");
+                    return;
+                }
+                throw new RuntimeException();
+            }
+
+            if (url.startsWith("/results/")) {
+                if (req.getMethod().equals("GET")) {
+                    resp.setContentType("text/plain;charset=utf-8");
+                    val filename = url.substring("/results/".length());
+                    fileService.readResultsFile(filename, resp.getWriter());
+                    return;
                 }
                 throw new RuntimeException();
             }
