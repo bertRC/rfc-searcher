@@ -8,9 +8,9 @@ import java.util.Map;
 public interface SearchService {
     List<QueryModel> getAllQueries();
 
-//    Map<String, String> getAllTaskPercents();
-
-//    String getTaskPercent(String id);
+    Map<String, String> getProgress();
 
     void search(String text);
+
+    void cancelSearching(String id);
 }
