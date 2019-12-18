@@ -72,6 +72,7 @@ public class RouterDefaultImpl implements Router {
                 if (req.getMethod().equals("GET")) {
                     val queries = searchService.getAllQueries();
                     req.setAttribute("queries", queries);
+                    req.setAttribute("searchingProgress", searchService.getProgress());
                     req.getRequestDispatcher("/WEB-INF/tasks.jsp").forward(req, resp);
                     return;
                 }
@@ -124,6 +125,16 @@ public class RouterDefaultImpl implements Router {
                     val text = req.getParameter("text");
                     //TODO: search
                     searchService.search(text);
+                    resp.sendRedirect("/tasks");
+                    return;
+                }
+                throw new RuntimeException();
+            }
+
+            if (url.equals("/query")) {
+                if (req.getMethod().equals("GET")) {
+                    val id = req.getParameter("cancel");
+                    searchService.cancelSearching(id);
                     resp.sendRedirect("/tasks");
                     return;
                 }

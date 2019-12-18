@@ -126,8 +126,8 @@ public class SearchServiceThreadedImpl implements SearchService {
                     .collect(Collectors.toList());
             setProgressMaxValue(id, queryFutures.size());
             globalFutures.put(id, queryFutures);
-            System.out.println("globalFutures size: " + globalFutures.size()); //TODO: remove it
-            System.out.println("Current tasks: " + queryFutures.size()); //TODO: remove it
+            System.out.println("Query: " + text + " " + id + " GlobalFutures size: " + globalFutures.size()); //TODO: remove it
+            System.out.println("Query: " + text + " " + id + " Current tasks: " + queryFutures.size()); //TODO: remove it
             CompletableFuture<Void> queryTotal = CompletableFuture.allOf(
                     queryFutures.toArray(new CompletableFuture[0]));
             queryTotal.thenRun(() -> {
@@ -151,19 +151,22 @@ public class SearchServiceThreadedImpl implements SearchService {
                 globalFutures.remove(id);
                 progress.remove(id);
                 long duration = System.currentTimeMillis() - startTime;
-                System.out.println("Searching took " + duration + " milliseconds");
+                System.out.println("Query: " + text + " " + id + "Searching took " + duration + " milliseconds");
+                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + globalFutures.size()); //TODO: remove it
             }).exceptionally(e -> {
-                System.out.println("Searching was canceled: " + text);
+                System.out.println("Searching was canceled: " + text + " " + id);
                 currentQueries.remove(queryModel);
                 queryModel.setStatus(QueryStatus.CANCELED);
                 queryRepository.save(queryModel);
                 globalFutures.remove(id);
 //                progress.remove(id); //moved to cancelSearching
+                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + globalFutures.size()); //TODO: remove it
                 return null;
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 //        cancelSearching(queryModel.getId()); //TODO: remove this
     }
 

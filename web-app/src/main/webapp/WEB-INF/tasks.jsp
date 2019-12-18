@@ -1,6 +1,7 @@
 <%@ page import="ru.itpark.model.QueryModel" %>
 <%@ page import="java.util.List" %>
 <%@ page import="ru.itpark.enumeration.QueryStatus" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -44,6 +45,7 @@
     </nav>
 
     <% List<QueryModel> queries = (List<QueryModel>) request.getAttribute("queries"); %>
+    <% Map<String, String> searchingProgress = (Map<String, String>) request.getAttribute("searchingProgress"); %>
     <% if (queries != null && !queries.isEmpty()) { %>
     <div class="row" style="margin-top: 16px">
         <div class="col">
@@ -57,20 +59,37 @@
                 </thead>
                 <tbody>
                 <% for (QueryModel query : queries) { %>
-                <tr>
+                <% String id = query.getId(); %>
+                <% String progressVal = searchingProgress.get(id); %>
+                <% String pval = progressVal != null ? progressVal : "0"; %>
+                <tr id="<%= id %>">
                     <td><%= query.getQuery() %>
                     </td>
-                    <td><%= query.getStatus() %>
-                        <%--                        <div class="progress" style="display: none">--%>
-                        <%--                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"--%>
-                        <%--                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">25%--%>
-                        <%--                            </div>--%>
-                        <%--                        </div>--%>
+                    <td>
+                        <% if (pval.equals("0")) { %>
+                        <%= query.getStatus() %>
+                        <% } %>
+                        <% if (query.getStatus().equals(QueryStatus.ENQUEUED) || query.getStatus().equals(QueryStatus.INPROGRESS)) { %>
+                        <% String style = "display: none"; %>
+                        <% if (!pval.equals("0")) {
+                            style = "";
+                        } %>
+                        <div class="progress" style="<%= style %>">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                 aria-valuenow="<%= pval %>" aria-valuemin="0" aria-valuemax="100"
+                                 style="width: <%= pval %>%"><%= pval %>%
+                            </div>
+                        </div>
+                        <% } %>
                     </td>
                     <td>
                         <% if (query.getStatus() == QueryStatus.DONE) { %>
                         <a href="<%= request.getContextPath()%>/results/<%= query.getId() + ".txt" %>">
                             Download Results
+                        </a>
+                        <% } else if (query.getStatus() != QueryStatus.CANCELED) { %>
+                        <a href="<%= request.getContextPath()%>/query?cancel=<%= query.getId() %>">
+                            Cancel
                         </a>
                         <% } %>
                     </td>
