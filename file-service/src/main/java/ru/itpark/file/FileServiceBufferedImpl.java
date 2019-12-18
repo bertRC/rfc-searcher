@@ -149,6 +149,7 @@ public class FileServiceBufferedImpl implements FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        System.out.println("DOING SEARCH " + filename);//TODO: remove this
         return result;
     }
 
