@@ -9,7 +9,7 @@ function setProgressValue(progressbar, pval) {
 }
 
 function downloadProgressInit() {
-    $.post("/scriptHandler/downloadProgress", function (responseText) {
+    $.get("/scriptHandler/downloadProgress", function (responseText) {
         if (responseText >= 0 && responseText < 100) {
             setTimeout(downloadProgressDoWork, delay);
         }
@@ -17,7 +17,7 @@ function downloadProgressInit() {
 }
 
 function downloadProgressDoWork() {
-    $.post("/scriptHandler/downloadProgress", function (responseText) {
+    $.get("/scriptHandler/downloadProgress", function (responseText) {
         if (responseText >= 0 && responseText < 100) {
             setProgressValue($("#downloadProgressbar"), responseText);
             setTimeout(downloadProgressDoWork, delay);
