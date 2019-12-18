@@ -88,7 +88,7 @@ public class SearchServiceThreadedImpl implements SearchService {
         return null;
     }
 
-    private CompletableFuture<List<String>> searchOneFuture(String text, Path file) {
+    private CompletableFuture<List<String>> searchOneFuture(String id, String text, Path file) {
         return CompletableFuture.supplyAsync(() -> {
             //TODO: progress
             try {
@@ -96,8 +96,14 @@ public class SearchServiceThreadedImpl implements SearchService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+//            List<Integer> list = new ArrayList<>();
+//            for (int i = 0; i < 80_000; i++) {
+//                list.add(0, i);
+//            }
             //TODO: remove this ^
-            return fileService.searchText(text, file);
+            List<String> result = fileService.searchText(text, file);
+            incProgressValue(id);
+            return result;
         }, pool);
 //                .exceptionally(e -> {
 //                    System.out.println("Some error happened in file: " + file.toString());
@@ -119,10 +125,12 @@ public class SearchServiceThreadedImpl implements SearchService {
         try {
             List<CompletableFuture<List<String>>> queryFutures = Files.list(rfcPath)
                     .filter(Files::isRegularFile)
-                    .map(path -> searchOneFuture(text, path).thenApply(result -> {
-                        incProgressValue(id);
-                        return result;
-                    }))
+                    .map(path -> searchOneFuture(id, text, path)
+//                            .thenApply(result -> {
+//                                incProgressValue(id);
+//                                return result;
+//                            })
+                    )
                     .collect(Collectors.toList());
             setProgressMaxValue(id, queryFutures.size());
             globalFutures.put(id, queryFutures);

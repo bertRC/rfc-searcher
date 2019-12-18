@@ -77,6 +77,7 @@ public class DownloadServiceThreadedImpl implements DownloadService {
             if (!fileService.downloadFromUrl(url, fileName, replaceIfExists)) {
                 System.out.println("Can not download " + fileName);
             }
+            tasksCompleted.incrementAndGet();
         }, pool);
     }
 
@@ -93,7 +94,7 @@ public class DownloadServiceThreadedImpl implements DownloadService {
         futures = nums.stream().map(i -> {
             String fileName = String.format(fileNameRegex, i);
             String url = String.format(urlRegex, i);
-            return downloadOneFuture(url, fileName, replaceIfExists).thenRun(tasksCompleted::incrementAndGet);
+            return downloadOneFuture(url, fileName, replaceIfExists);//.thenRun(tasksCompleted::incrementAndGet);
         }).collect(Collectors.toList());
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRun(() -> {
