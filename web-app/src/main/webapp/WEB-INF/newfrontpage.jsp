@@ -67,7 +67,7 @@
         style = "";
     } else {
         pval = "0";
-    }%>
+    } %>
     <form action="<%= request.getContextPath() %>/rfc/cancel" method="post">
         <div class="row align-items-center" id="downloadProgress" style="<%= style %>">
             <div class="col">
