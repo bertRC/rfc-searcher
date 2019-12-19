@@ -66,9 +66,11 @@
                     <td><%= query.getQuery() %>
                     </td>
                     <td>
-                        <% if (pval.equals("0")) { %>
-                        <%= query.getStatus() %>
-                        <% } %>
+                        <a>
+                            <% if (pval.equals("0")) { %>
+                            <%= query.getStatus() %>
+                            <% } %>
+                        </a>
                         <% if (query.getStatus().equals(QueryStatus.ENQUEUED) || query.getStatus().equals(QueryStatus.INPROGRESS)) { %>
                         <% String style = "display: none"; %>
                         <% if (!pval.equals("0")) {
@@ -132,9 +134,9 @@
 </div>
 
 <%@ include file="script-collection.jsp" %>
-<%--<script>--%>
-<%--    <%@ include file="js/download-progress.js" %>--%>
-<%--</script>--%>
+<script>
+    <%@ include file="js/search-progress.js" %>
+</script>
 <script>
     <%@ include file="js/query-table-init.js" %>
 </script>

@@ -158,6 +158,27 @@ public class RouterDefaultImpl implements Router {
                 return;
             }
 
+            if (url.equals("/scriptHandler/searchProgress")) {
+                val searchProgress = searchService.getProgress().toString()
+                        .replaceAll("\\s", "")
+                        .replace("{", "")
+                        .replace("}", "");
+                resp.setContentType("text/plain");
+                resp.getWriter().write(searchProgress);
+//                System.out.println(searchProgress);
+                return;
+            }
+
+            if (url.equals("/scriptHandler/getResult")) {
+                val queryId = req.getParameter("queryId");
+                val resultFile = fileService.isResultReady(queryId);
+//                if (!resultFile.equals("")) {
+//                    resultFile = "/results/" + resultFile;
+//                }
+                resp.getWriter().write(resultFile);
+                return;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

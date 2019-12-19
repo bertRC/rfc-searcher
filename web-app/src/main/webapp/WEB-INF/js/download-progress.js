@@ -9,17 +9,17 @@ function setProgressValue(progressbar, pval) {
 }
 
 function downloadProgressInit() {
-    $.get("/scriptHandler/downloadProgress", function (responseText) {
-        if (responseText >= 0 && responseText < 100) {
+    $.get("/scriptHandler/downloadProgress", function (resp) {
+        if (resp >= 0 && resp < 100) {
             setTimeout(downloadProgressDoWork, delay);
         }
     });
 }
 
 function downloadProgressDoWork() {
-    $.get("/scriptHandler/downloadProgress", function (responseText) {
-        if (responseText >= 0 && responseText < 100) {
-            setProgressValue($("#downloadProgressbar"), responseText);
+    $.get("/scriptHandler/downloadProgress", function (resp) {
+        if (resp >= 0 && resp < 100) {
+            setProgressValue($("#downloadProgressbar"), resp);
             setTimeout(downloadProgressDoWork, delay);
         } else {
             downloadProgressComplete();
