@@ -2,15 +2,12 @@ package ru.itpark.service;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import lombok.val;
 import ru.itpark.enumeration.QueryStatus;
 import ru.itpark.file.FileService;
 import ru.itpark.model.ProgressValue;
 import ru.itpark.model.QueryModel;
 import ru.itpark.repository.QueryRepository;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,8 +20,8 @@ public class SearchServiceThreadedImpl implements SearchService {
     private Path rfcPath;
     private QueryRepository queryRepository;
 
-    private final ExecutorService pool = Executors.newFixedThreadPool(10);
-    private final ConcurrentMap<String, List<CompletableFuture<List<String>>>> globalFutures = new ConcurrentHashMap<>();
+    private final ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private final ConcurrentMap<String, List<CompletableFuture<List<String>>>> initialFutures = new ConcurrentHashMap<>();
 
     private final Deque<QueryModel> currentQueries = new ConcurrentLinkedDeque<>();
 
@@ -88,28 +85,34 @@ public class SearchServiceThreadedImpl implements SearchService {
         return null;
     }
 
+    private void currentQueriesRemoveLastAndSave() {
+        QueryModel last = currentQueries.peekLast();
+        if (last == null) {
+            return;
+        }
+        if (last.getStatus() == QueryStatus.ENQUEUED ||
+                last.getStatus() == QueryStatus.INPROGRESS) {
+            return;
+        }
+        currentQueries.remove(last);
+        queryRepository.save(last);
+        currentQueriesRemoveLastAndSave();
+    }
+
     private CompletableFuture<List<String>> searchOneFuture(String id, String text, Path file) {
         return CompletableFuture.supplyAsync(() -> {
             //TODO: progress
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-//            List<Integer> list = new ArrayList<>();
-//            for (int i = 0; i < 80_000; i++) {
-//                list.add(0, i);
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
 //            }
             //TODO: remove this ^
             List<String> result = fileService.searchText(text, file);
             incProgressValue(id);
+//            System.out.println(progress);
             return result;
         }, pool);
-//                .exceptionally(e -> {
-//                    System.out.println("Some error happened in file: " + file.toString());
-//                    System.out.println(e.getMessage());
-//                    return null;
-//                });
     }
 
     @Override
@@ -125,16 +128,11 @@ public class SearchServiceThreadedImpl implements SearchService {
         try {
             List<CompletableFuture<List<String>>> queryFutures = Files.list(rfcPath)
                     .filter(Files::isRegularFile)
-                    .map(path -> searchOneFuture(id, text, path)
-//                            .thenApply(result -> {
-//                                incProgressValue(id);
-//                                return result;
-//                            })
-                    )
+                    .map(path -> searchOneFuture(id, text, path))
                     .collect(Collectors.toList());
             setProgressMaxValue(id, queryFutures.size());
-            globalFutures.put(id, queryFutures);
-            System.out.println("Query: " + text + " " + id + " GlobalFutures size: " + globalFutures.size()); //TODO: remove it
+            initialFutures.put(id, queryFutures);
+            System.out.println("Query: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
             System.out.println("Query: " + text + " " + id + " Current tasks: " + queryFutures.size()); //TODO: remove it
             CompletableFuture<Void> queryTotal = CompletableFuture.allOf(
                     queryFutures.toArray(new CompletableFuture[0]));
@@ -153,22 +151,24 @@ public class SearchServiceThreadedImpl implements SearchService {
                 });
                 result.sort(resultsComparator);
                 fileService.writeResultFile(id + ".txt", text, result);
-                currentQueries.remove(queryModel);
                 queryModel.setStatus(QueryStatus.DONE);
-                queryRepository.save(queryModel);
-                globalFutures.remove(id);
+//                currentQueries.remove(queryModel);
+//                queryRepository.save(queryModel);
+                currentQueriesRemoveLastAndSave();
+                initialFutures.remove(id);
                 progress.remove(id);
                 long duration = System.currentTimeMillis() - startTime;
                 System.out.println("Query: " + text + " " + id + "Searching took " + duration + " milliseconds");
-                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + globalFutures.size()); //TODO: remove it
+                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
             }).exceptionally(e -> {
                 System.out.println("Searching was canceled: " + text + " " + id);
-                currentQueries.remove(queryModel);
                 queryModel.setStatus(QueryStatus.CANCELED);
-                queryRepository.save(queryModel);
-                globalFutures.remove(id);
+//                currentQueries.remove(queryModel);
+//                queryRepository.save(queryModel);
+                currentQueriesRemoveLastAndSave();
+                initialFutures.remove(id);
 //                progress.remove(id); //moved to cancelSearching
-                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + globalFutures.size()); //TODO: remove it
+                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
                 return null;
             });
         } catch (IOException e) {
@@ -180,7 +180,7 @@ public class SearchServiceThreadedImpl implements SearchService {
 
     @Override
     public void cancelSearching(String id) {
-        final List<CompletableFuture<List<String>>> futures = globalFutures.get(id);
+        final List<CompletableFuture<List<String>>> futures = initialFutures.get(id);
         if (futures != null) {
             progress.remove(id);
             futures.forEach(future -> future.cancel(false));
