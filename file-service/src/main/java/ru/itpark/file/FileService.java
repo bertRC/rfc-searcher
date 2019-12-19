@@ -26,6 +26,8 @@ public interface FileService {
 
     void readResultsFile(String name, PrintWriter printWriter);
 
+    String isResultReady(String id);
+
     List<String> searchText(String text, Path path);
 
     boolean removeFile(String name);

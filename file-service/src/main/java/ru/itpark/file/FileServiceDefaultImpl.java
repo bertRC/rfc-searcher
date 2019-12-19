@@ -112,7 +112,7 @@ public class FileServiceDefaultImpl implements FileService {
 
     @Override
     public void readFile(Path file, PrintWriter printWriter) {
-        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8) ) {
+        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
             lines.forEach(printWriter::println);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -127,6 +127,15 @@ public class FileServiceDefaultImpl implements FileService {
     @Override
     public void readResultsFile(String name, PrintWriter printWriter) {
         readFile(resultsPath.resolve(name), printWriter);
+    }
+
+    @Override
+    public String isResultReady(String id) {
+        Path path = resultsPath.resolve(id + ".txt");
+        if (Files.exists(path)) {
+            return uploadPath.relativize(path).toString();
+        }
+        return "";
     }
 
     @Override

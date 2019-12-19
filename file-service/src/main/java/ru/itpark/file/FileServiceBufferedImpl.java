@@ -134,6 +134,15 @@ public class FileServiceBufferedImpl implements FileService {
     }
 
     @Override
+    public String isResultReady(String id) {
+        Path path = resultsPath.resolve(id + ".txt");
+        if (Files.exists(path)) {
+            return uploadPath.relativize(path).toString();
+        }
+        return "";
+    }
+
+    @Override
     public List<String> searchText(String text, Path path) {
         String filename = rfcPath.relativize(path).toString();
         List<String> result = new ArrayList<>();
@@ -149,7 +158,7 @@ public class FileServiceBufferedImpl implements FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("DOING SEARCH " + filename);//TODO: remove this
+//        System.out.println("DOING SEARCH " + filename);//TODO: remove this
         return result;
     }
 
