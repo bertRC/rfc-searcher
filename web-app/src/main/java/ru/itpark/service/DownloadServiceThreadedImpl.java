@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class DownloadServiceThreadedImpl implements DownloadService {
     private FileService fileService;
 
-    private final ExecutorService pool = Executors.newFixedThreadPool(10); //TODO: number of threads
+    private final ExecutorService pool = Executors.newFixedThreadPool(40); //TODO: number of threads
     private List<CompletableFuture<Void>> futures;
     private final AtomicInteger tasksCompleted = new AtomicInteger(0);
     private final AtomicInteger tasksCount = new AtomicInteger(0);
