@@ -16,7 +16,6 @@ public class RouterRegexImpl implements Router {
     private SearchService searchService;
     private DownloadService downloadService;
     public static final Pattern urlPattern = Pattern.compile("^/(\\w+)/?(.*)$");
-    //TODO: Tasks Files -> Files Tasks navbar
 
     @Inject
     public void setFileService(FileService fileService) {

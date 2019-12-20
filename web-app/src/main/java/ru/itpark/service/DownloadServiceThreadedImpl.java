@@ -6,11 +6,12 @@ import ru.itpark.file.FileService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-//TODO: download cancel button
 public class DownloadServiceThreadedImpl implements DownloadService {
     private FileService fileService;
 
@@ -94,7 +95,7 @@ public class DownloadServiceThreadedImpl implements DownloadService {
         futures = nums.stream().map(i -> {
             String fileName = String.format(fileNameRegex, i);
             String url = String.format(urlRegex, i);
-            return downloadOneFuture(url, fileName, replaceIfExists);//.thenRun(tasksCompleted::incrementAndGet);
+            return downloadOneFuture(url, fileName, replaceIfExists);
         }).collect(Collectors.toList());
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRun(() -> {

@@ -101,16 +101,8 @@ public class SearchServiceThreadedImpl implements SearchService {
 
     private CompletableFuture<List<String>> searchOneFuture(String id, String text, Path file) {
         return CompletableFuture.supplyAsync(() -> {
-            //TODO: progress
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-            //TODO: remove this ^
             List<String> result = fileService.searchText(text, file);
             incProgressValue(id);
-//            System.out.println(progress);
             return result;
         }, pool);
     }
@@ -123,8 +115,6 @@ public class SearchServiceThreadedImpl implements SearchService {
         QueryModel queryModel = new QueryModel(id, text, QueryStatus.ENQUEUED);
         progress.put(id, new ProgressValue());
         currentQueries.addFirst(queryModel);
-        //TODO: progress
-        //параллельный поиск - два запроса можно обрабатывать одновременно
         try {
             List<CompletableFuture<List<String>>> queryFutures = Files.list(rfcPath)
                     .filter(Files::isRegularFile)
@@ -137,11 +127,6 @@ public class SearchServiceThreadedImpl implements SearchService {
             CompletableFuture<Void> queryTotal = CompletableFuture.allOf(
                     queryFutures.toArray(new CompletableFuture[0]));
             queryTotal.thenRun(() -> {
-                //TODO: сортировка результата
-                //TODO: запись результата в файл
-                //TODO: запись в БД
-                //TODO: завершить прогресс
-                //TODO: вдруг отменили?
                 List<String> result = new ArrayList<>();
                 queryFutures.forEach(future -> {
                     List<String> list = future.join();
@@ -152,8 +137,6 @@ public class SearchServiceThreadedImpl implements SearchService {
                 result.sort(resultsComparator);
                 fileService.writeResultFile(id + ".txt", text, result);
                 queryModel.setStatus(QueryStatus.DONE);
-//                currentQueries.remove(queryModel);
-//                queryRepository.save(queryModel);
                 currentQueriesRemoveLastAndSave();
                 initialFutures.remove(id);
                 progress.remove(id);
@@ -163,19 +146,14 @@ public class SearchServiceThreadedImpl implements SearchService {
             }).exceptionally(e -> {
                 System.out.println("Searching was canceled: " + text + " " + id);
                 queryModel.setStatus(QueryStatus.CANCELED);
-//                currentQueries.remove(queryModel);
-//                queryRepository.save(queryModel);
                 currentQueriesRemoveLastAndSave();
                 initialFutures.remove(id);
-//                progress.remove(id); //moved to cancelSearching
                 System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
                 return null;
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-//        cancelSearching(queryModel.getId()); //TODO: remove this
     }
 
     @Override

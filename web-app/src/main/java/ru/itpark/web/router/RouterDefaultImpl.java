@@ -14,9 +14,6 @@ public class RouterDefaultImpl implements Router {
     private FileService fileService;
     private SearchService searchService;
     private DownloadService downloadService;
-//    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
-//    TODO: regex
-    //TODO: Tasks Files -> Files Tasks navbar
 
     @Inject
     public void setFileService(FileService fileService) {
@@ -57,17 +54,6 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
-            //            val matcher = urlPattern.matcher(url);
-//            String queryName;
-//            String attribute;
-//            // url template: "/queryName/attribute"
-//            if (matcher.find()) {
-//                queryName = matcher.group(1);
-//                attribute = matcher.group(2);
-//            } else return;
-
-            // rfc1.txt or ?remove=rfc1.txt
-
             if (url.equals("/tasks")) {
                 if (req.getMethod().equals("GET")) {
                     val queries = searchService.getAllQueries();
@@ -83,7 +69,6 @@ public class RouterDefaultImpl implements Router {
                 if (req.getMethod().equals("GET")) {
                     val filename = req.getParameter("remove");
                     if (filename.toLowerCase().equals("all")) {
-//                        fileService.removeAll();
                         downloadService.removeAllRfc();
                     } else {
                         fileService.removeFile(filename);
@@ -164,16 +149,12 @@ public class RouterDefaultImpl implements Router {
                         .replace("}", "");
                 resp.setContentType("text/plain");
                 resp.getWriter().write(searchProgress);
-//                System.out.println(searchProgress);
                 return;
             }
 
             if (url.equals("/scriptHandler/getResult")) {
                 val queryId = req.getParameter("queryId");
                 val resultFile = fileService.isResultReady(queryId);
-//                if (!resultFile.equals("")) {
-//                    resultFile = "/results/" + resultFile;
-//                }
                 resp.getWriter().write(resultFile);
             }
 

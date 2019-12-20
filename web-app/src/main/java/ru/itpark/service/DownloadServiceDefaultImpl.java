@@ -68,10 +68,9 @@ public class DownloadServiceDefaultImpl implements DownloadService {
 
     @Override
     public void downloadAllFromUrl(String numbers, boolean replaceIfExists) {
+        System.out.println("Starting download...");
         long startTime = System.currentTimeMillis();
         if (downloadThread != null && downloadThread.isAlive()) {
-            // need to interrupt current working thread
-            // and restart task as new
             cancelDownloading();
         }
         downloadPercent.set(0);
