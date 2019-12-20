@@ -67,7 +67,7 @@
                     </td>
                     <td>
                         <a>
-                            <% if (pval.equals("0")) { %>
+                            <% if (pval.equals("0") || query.getStatus().equals(QueryStatus.DONE) || query.getStatus().equals(QueryStatus.CANCELED)) { %>
                             <%= query.getStatus() %>
                             <% } %>
                         </a>
