@@ -1,6 +1,7 @@
 package ru.itpark.file;
 
 import lombok.val;
+import ru.itpark.comparator.RfcFileNameComparator;
 import ru.itpark.exception.FileAccessException;
 
 import javax.servlet.http.Part;
@@ -27,17 +28,7 @@ public class FileServiceDefaultImpl implements FileService {
     private final Path rfcPath;
     private final Path resultsPath;
 
-    static final Comparator<String> rfcFileNameComparator = new Comparator<String>() {
-        int extractInt(String str) {
-            String num = str.replaceAll("\\D", "");
-            return num.isEmpty() ? 0 : Integer.parseInt(num);
-        }
-
-        @Override
-        public int compare(String o1, String o2) {
-            return extractInt(o1) - extractInt(o2);
-        }
-    };
+    private final RfcFileNameComparator rfcFileNameComparator = new RfcFileNameComparator();
 
     public FileServiceDefaultImpl() {
         try {

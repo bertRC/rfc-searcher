@@ -2,6 +2,7 @@ package ru.itpark.service;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import ru.itpark.comparator.ResultsComparator;
 import ru.itpark.enumeration.QueryStatus;
 import ru.itpark.file.FileService;
 import ru.itpark.model.ProgressValue;
@@ -27,19 +28,7 @@ public class SearchServiceThreadedImpl implements SearchService {
 
     private final ConcurrentMap<String, ProgressValue> progress = new ConcurrentHashMap<>();
 
-    //TODO: comparators to util class
-    static final Comparator<String> resultsComparator = new Comparator<String>() {
-        int extractFirstInt(String str) {
-            int index = str.indexOf("Line");
-            String num = index != -1 ? str.substring(0, index).replaceAll("\\D", "") : "";
-            return num.isEmpty() ? 0 : Integer.parseInt(num);
-        }
-
-        @Override
-        public int compare(String o1, String o2) {
-            return extractFirstInt(o1) - extractFirstInt(o2);
-        }
-    };
+    private final ResultsComparator resultsComparator = new ResultsComparator();
 
     @Inject
     public void setFileService(FileService fService) {
