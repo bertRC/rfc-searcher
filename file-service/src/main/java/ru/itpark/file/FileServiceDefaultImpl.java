@@ -1,9 +1,13 @@
 package ru.itpark.file;
 
 import lombok.val;
+import ru.itpark.exception.FileAccessException;
 
 import javax.servlet.http.Part;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -43,19 +47,13 @@ public class FileServiceDefaultImpl implements FileService {
             Files.createDirectories(rfcPath);
             Files.createDirectories(resultsPath);
         } catch (IOException e) {
-            //TODO: create new exceptions
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
     @Override
     public Path getRfcPath() {
         return rfcPath;
-    }
-
-    @Override
-    public Path getResultPath() {
-        return resultsPath;
     }
 
     @Override
@@ -66,14 +64,14 @@ public class FileServiceDefaultImpl implements FileService {
     @Override
     public void writeResultFile(Path file, String query, List<String> lines) {
         try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
-            writer.write("[Query Text]: " + query);
+            writer.write("[Search Phrase]: " + query);
             writer.newLine();
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessException(e);
         }
     }
 
@@ -84,7 +82,7 @@ public class FileServiceDefaultImpl implements FileService {
             part.write(rfcPath.resolve(filename).toString());
             return filename;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -106,7 +104,7 @@ public class FileServiceDefaultImpl implements FileService {
                     .sorted(rfcFileNameComparator)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -115,7 +113,7 @@ public class FileServiceDefaultImpl implements FileService {
         try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
             lines.forEach(printWriter::println);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -163,7 +161,7 @@ public class FileServiceDefaultImpl implements FileService {
         try {
             return Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -174,16 +172,13 @@ public class FileServiceDefaultImpl implements FileService {
 
     @Override
     public void removeAll(Path dir) {
-        final long startTime = System.currentTimeMillis();
         try (val paths = Files.walk(dir)) {
             paths
                     .filter(Files::isRegularFile)
                     .sorted(Comparator.reverseOrder())
                     .forEach(this::removeFile);
-            final long duration = System.currentTimeMillis() - startTime;
-            System.out.println("Deleting took " + duration + " milliseconds");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 

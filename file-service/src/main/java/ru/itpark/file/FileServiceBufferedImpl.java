@@ -1,6 +1,7 @@
 package ru.itpark.file;
 
 import lombok.val;
+import ru.itpark.exception.FileAccessException;
 
 import javax.servlet.http.Part;
 import java.io.*;
@@ -11,10 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -43,8 +42,7 @@ public class FileServiceBufferedImpl implements FileService {
             Files.createDirectories(rfcPath);
             Files.createDirectories(resultsPath);
         } catch (IOException e) {
-            //TODO: create new exceptions
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -54,27 +52,21 @@ public class FileServiceBufferedImpl implements FileService {
     }
 
     @Override
-    public Path getResultPath() {
-        return resultsPath;
-    }
-
-    @Override
     public void writeResultFile(String filename, String query, List<String> lines) {
         writeResultFile(resultsPath.resolve(filename), query, lines);
     }
 
     @Override
     public void writeResultFile(Path file, String query, List<String> lines) {
-//        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.toFile()), StandardCharsets.UTF_8))) {
-            writer.write("[Query Text]: " + query);
+            writer.write("[Search Phrase]: " + query);
             writer.newLine();
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -85,7 +77,7 @@ public class FileServiceBufferedImpl implements FileService {
             part.write(rfcPath.resolve(filename).toString());
             return filename;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -107,7 +99,7 @@ public class FileServiceBufferedImpl implements FileService {
                     .sorted(rfcFileNameComparator)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -119,7 +111,7 @@ public class FileServiceBufferedImpl implements FileService {
                 printWriter.println(line);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -158,7 +150,6 @@ public class FileServiceBufferedImpl implements FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println("DOING SEARCH " + filename);//TODO: remove this
         return result;
     }
 
@@ -167,7 +158,7 @@ public class FileServiceBufferedImpl implements FileService {
         try {
             return Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
@@ -178,16 +169,13 @@ public class FileServiceBufferedImpl implements FileService {
 
     @Override
     public void removeAll(Path dir) {
-        final long startTime = System.currentTimeMillis();
         try (val paths = Files.walk(dir)) {
             paths
                     .filter(Files::isRegularFile)
                     .sorted(Comparator.reverseOrder())
                     .forEach(this::removeFile);
-            final long duration = System.currentTimeMillis() - startTime;
-            System.out.println("Deleting took " + duration + " milliseconds");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileAccessException(e);
         }
     }
 
