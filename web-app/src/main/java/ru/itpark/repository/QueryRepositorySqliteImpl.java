@@ -1,6 +1,7 @@
 package ru.itpark.repository;
 
 import ru.itpark.enumeration.QueryStatus;
+import ru.itpark.exception.DataAccessException;
 import ru.itpark.model.QueryModel;
 import ru.itpark.util.JdbcTemplate;
 
@@ -19,7 +20,7 @@ public class QueryRepositorySqliteImpl implements QueryRepository {
             InitialContext context = new InitialContext();
             ds = (DataSource) context.lookup("java:/comp/env/jdbc/db");
         } catch (NamingException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e);
         }
     }
 
@@ -28,7 +29,7 @@ public class QueryRepositorySqliteImpl implements QueryRepository {
         try {
             template.update(ds, "CREATE TABLE IF NOT EXISTS queries (id TEXT PRIMARY KEY, query TEXT NOT NULL, status TEXT NOT NULL)");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e);
         }
     }
 
@@ -43,7 +44,7 @@ public class QueryRepositorySqliteImpl implements QueryRepository {
                     )
             );
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e);
         }
     }
 
@@ -57,8 +58,8 @@ public class QueryRepositorySqliteImpl implements QueryRepository {
                 return stmt;
             });
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e);
         }
     }
-    //TODO: remove methods
+    //TODO: think about remove methods
 }
