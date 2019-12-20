@@ -8,14 +8,14 @@ import ru.itpark.service.SearchService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class RouterDefaultImpl implements Router {
+public class RouterRegexImpl implements Router {
     private FileService fileService;
     private SearchService searchService;
     private DownloadService downloadService;
-//    public static final Pattern urlPattern = Pattern.compile("^/(.+)/(.*)$");
-//    TODO: regex
+    public static final Pattern urlPattern = Pattern.compile("^/(\\w+)/?(.*)$");
     //TODO: Tasks Files -> Files Tasks navbar
 
     @Inject
@@ -57,18 +57,15 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
-            //            val matcher = urlPattern.matcher(url);
-//            String queryName;
-//            String attribute;
-//            // url template: "/queryName/attribute"
-//            if (matcher.find()) {
-//                queryName = matcher.group(1);
-//                attribute = matcher.group(2);
-//            } else return;
+            val matcher = urlPattern.matcher(url);
+            String firstUrlSubPath;
+            String secondUrlSubPath;
+            if (matcher.find()) {
+                firstUrlSubPath = matcher.group(1);
+                secondUrlSubPath = matcher.group(2);
+            } else return;
 
-            // rfc1.txt or ?remove=rfc1.txt
-
-            if (url.equals("/tasks")) {
+            if (firstUrlSubPath.equals("tasks")) {
                 if (req.getMethod().equals("GET")) {
                     val queries = searchService.getAllQueries();
                     req.setAttribute("queries", queries);
@@ -79,11 +76,10 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
-            if (url.equals("/rfc")) {
-                if (req.getMethod().equals("GET")) {
+            if (firstUrlSubPath.equals("rfc")) {
+                if (secondUrlSubPath.isEmpty() && req.getMethod().equals("GET")) {
                     val filename = req.getParameter("remove");
                     if (filename.toLowerCase().equals("all")) {
-//                        fileService.removeAll();
                         downloadService.removeAllRfc();
                     } else {
                         fileService.removeFile(filename);
@@ -91,36 +87,30 @@ public class RouterDefaultImpl implements Router {
                     resp.sendRedirect(rootUrl);
                     return;
                 }
-                throw new RuntimeException();
-            }
 
-            if (url.startsWith("/rfc/")) {
-                if (req.getMethod().equals("GET")) {
+                if (!secondUrlSubPath.isEmpty() && req.getMethod().equals("GET")) {
                     resp.setContentType("text/plain;charset=utf-8");
-                    val filename = url.substring("/rfc/".length());
-                    fileService.readRfcFile(filename, resp.getWriter());
+                    fileService.readRfcFile(secondUrlSubPath, resp.getWriter());
                     return;
                 }
 
-                if (url.equals("/rfc/download")) {
-                    if (req.getMethod().equals("POST")) {
-                        val numbers = req.getParameter("numbers");
-                        downloadService.downloadAllFromUrl(numbers, false);
-                        resp.sendRedirect(rootUrl);
-                        return;
-                    }
+                if (secondUrlSubPath.equals("download") && req.getMethod().equals("POST")) {
+                    val numbers = req.getParameter("numbers");
+                    downloadService.downloadAllFromUrl(numbers, false);
+                    resp.sendRedirect(rootUrl);
+                    return;
                 }
-                if (url.equals("/rfc/cancel")) {
-                    if (req.getMethod().equals("POST")) {
-                        downloadService.cancelDownloading();
-                        resp.sendRedirect(rootUrl);
-                        return;
-                    }
+
+                if (secondUrlSubPath.equals("cancel") && req.getMethod().equals("POST")) {
+                    downloadService.cancelDownloading();
+                    resp.sendRedirect(rootUrl);
+                    return;
                 }
+
                 throw new RuntimeException();
             }
 
-            if (url.equals("/search")) {
+            if (firstUrlSubPath.equals("search")) {
                 if (req.getMethod().equals("GET")) {
                     val text = req.getParameter("text").trim();
                     searchService.search(text);
@@ -130,7 +120,7 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
-            if (url.equals("/query")) {
+            if (firstUrlSubPath.equals("query")) {
                 if (req.getMethod().equals("GET")) {
                     val id = req.getParameter("cancel");
                     searchService.cancelSearching(id);
@@ -140,42 +130,42 @@ public class RouterDefaultImpl implements Router {
                 throw new RuntimeException();
             }
 
-            if (url.startsWith("/results/")) {
+            if (firstUrlSubPath.equals("results")) {
                 if (req.getMethod().equals("GET")) {
                     resp.setContentType("text/plain;charset=utf-8");
-                    val filename = url.substring("/results/".length());
-                    fileService.readResultsFile(filename, resp.getWriter());
+                    fileService.readResultsFile(secondUrlSubPath, resp.getWriter());
                     return;
                 }
                 throw new RuntimeException();
             }
 
-            if (url.equals("/scriptHandler/downloadProgress")) {
-                val downloadPercent = downloadService.getDownloadPercent();
-                resp.setContentType("text/plain");
-                resp.getWriter().write(downloadPercent);
-                return;
+            if (firstUrlSubPath.equals("scriptHandler")) {
+                if (secondUrlSubPath.equals("downloadProgress")) {
+                    val downloadPercent = downloadService.getDownloadPercent();
+                    resp.setContentType("text/plain");
+                    resp.getWriter().write(downloadPercent);
+                    return;
+                }
+
+                if (secondUrlSubPath.equals("searchProgress")) {
+                    val searchProgress = searchService.getProgress().toString()
+                            .replaceAll("\\s", "")
+                            .replace("{", "")
+                            .replace("}", "");
+                    resp.setContentType("text/plain");
+                    resp.getWriter().write(searchProgress);
+                    return;
+                }
+
+                if (secondUrlSubPath.equals("getResult")) {
+                    val queryId = req.getParameter("queryId");
+                    val resultFile = fileService.isResultReady(queryId);
+                    resp.getWriter().write(resultFile);
+                    return;
+                }
             }
 
-            if (url.equals("/scriptHandler/searchProgress")) {
-                val searchProgress = searchService.getProgress().toString()
-                        .replaceAll("\\s", "")
-                        .replace("{", "")
-                        .replace("}", "");
-                resp.setContentType("text/plain");
-                resp.getWriter().write(searchProgress);
-//                System.out.println(searchProgress);
-                return;
-            }
-
-            if (url.equals("/scriptHandler/getResult")) {
-                val queryId = req.getParameter("queryId");
-                val resultFile = fileService.isResultReady(queryId);
-//                if (!resultFile.equals("")) {
-//                    resultFile = "/results/" + resultFile;
-//                }
-                resp.getWriter().write(resultFile);
-            }
+            throw new RuntimeException();
 
         } catch (Exception e) {
             e.printStackTrace();

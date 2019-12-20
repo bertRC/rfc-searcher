@@ -14,6 +14,7 @@ import ru.itpark.service.*;
 import ru.itpark.web.router.Router;
 import ru.itpark.web.router.RouterDefaultImpl;
 import ru.itpark.web.router.RouterHelloWorldImpl;
+import ru.itpark.web.router.RouterRegexImpl;
 
 public class FrontControllerConfig extends GuiceServletContextListener {
     @Override
@@ -22,7 +23,8 @@ public class FrontControllerConfig extends GuiceServletContextListener {
             @Override
             protected void configureServlets() {
                 serve("/", "/tasks", "/search", "/rfc*", "/results*", "/query", "/scriptHandler/*").with(FrontController.class);
-                bind(Router.class).to(RouterDefaultImpl.class);
+//                bind(Router.class).to(RouterDefaultImpl.class);
+                bind(Router.class).to(RouterRegexImpl.class);
 //                bind(Router.class).to(RouterHelloWorldImpl.class);
                 bind(SearchService.class).to(SearchServiceThreadedImpl.class);
 //                bind(DownloadService.class).to(DownloadServiceDefaultImpl.class);
