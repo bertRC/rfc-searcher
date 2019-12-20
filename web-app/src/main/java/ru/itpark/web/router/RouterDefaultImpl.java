@@ -2,6 +2,7 @@ package ru.itpark.web.router;
 
 import com.google.inject.Inject;
 import lombok.val;
+import ru.itpark.exception.NotFoundException;
 import ru.itpark.file.FileService;
 import ru.itpark.service.DownloadService;
 import ru.itpark.service.SearchService;
@@ -51,7 +52,7 @@ public class RouterDefaultImpl implements Router {
                     resp.sendRedirect(rootUrl);
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.equals("/tasks")) {
@@ -62,7 +63,7 @@ public class RouterDefaultImpl implements Router {
                     req.getRequestDispatcher("/WEB-INF/tasks.jsp").forward(req, resp);
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.equals("/rfc")) {
@@ -76,7 +77,7 @@ public class RouterDefaultImpl implements Router {
                     resp.sendRedirect(rootUrl);
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.startsWith("/rfc/")) {
@@ -102,7 +103,7 @@ public class RouterDefaultImpl implements Router {
                         return;
                     }
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.equals("/search")) {
@@ -112,7 +113,7 @@ public class RouterDefaultImpl implements Router {
                     resp.sendRedirect("/tasks");
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.equals("/query")) {
@@ -122,7 +123,7 @@ public class RouterDefaultImpl implements Router {
                     resp.sendRedirect("/tasks");
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.startsWith("/results/")) {
@@ -132,7 +133,7 @@ public class RouterDefaultImpl implements Router {
                     fileService.readResultsFile(filename, resp.getWriter());
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (url.equals("/scriptHandler/downloadProgress")) {

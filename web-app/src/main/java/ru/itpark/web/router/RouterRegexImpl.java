@@ -2,6 +2,7 @@ package ru.itpark.web.router;
 
 import com.google.inject.Inject;
 import lombok.val;
+import ru.itpark.exception.NotFoundException;
 import ru.itpark.file.FileService;
 import ru.itpark.service.DownloadService;
 import ru.itpark.service.SearchService;
@@ -53,7 +54,7 @@ public class RouterRegexImpl implements Router {
                     resp.sendRedirect(rootUrl);
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             val matcher = urlPattern.matcher(url);
@@ -72,7 +73,7 @@ public class RouterRegexImpl implements Router {
                     req.getRequestDispatcher("/WEB-INF/tasks.jsp").forward(req, resp);
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (firstUrlSubPath.equals("rfc")) {
@@ -106,7 +107,7 @@ public class RouterRegexImpl implements Router {
                     return;
                 }
 
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (firstUrlSubPath.equals("search")) {
@@ -116,7 +117,7 @@ public class RouterRegexImpl implements Router {
                     resp.sendRedirect("/tasks");
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (firstUrlSubPath.equals("query")) {
@@ -126,7 +127,7 @@ public class RouterRegexImpl implements Router {
                     resp.sendRedirect("/tasks");
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (firstUrlSubPath.equals("results")) {
@@ -135,7 +136,7 @@ public class RouterRegexImpl implements Router {
                     fileService.readResultsFile(secondUrlSubPath, resp.getWriter());
                     return;
                 }
-                throw new RuntimeException();
+                throw new NotFoundException();
             }
 
             if (firstUrlSubPath.equals("scriptHandler")) {
@@ -164,7 +165,7 @@ public class RouterRegexImpl implements Router {
                 }
             }
 
-            throw new RuntimeException();
+            throw new NotFoundException();
 
         } catch (Exception e) {
             e.printStackTrace();
