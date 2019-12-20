@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class JdbcTemplate {
+public class JdbcHelper {
     public <T> List<T> queryForList(DataSource dataSource, String query, RowMapper<T> mapper) throws SQLException {
         return execute(dataSource, query, (Executable<List<T>>) resultSet -> {
             List<T> list = new LinkedList<>();

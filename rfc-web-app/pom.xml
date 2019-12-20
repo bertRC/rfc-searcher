@@ -4,19 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>web-app</artifactId>
+    <artifactId>rfc-web-app</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
     <parent>
         <groupId>ru.itpark</groupId>
         <artifactId>rfc-searcher</artifactId>
-        <version>1.0</version>
+        <version>1.0.2</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>ru.itpark</groupId>
-            <artifactId>jdbc-template</artifactId>
+            <artifactId>jdbc-helper</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.itpark</groupId>
@@ -79,7 +79,7 @@
                                 </dependency>
                                 <dependency>
                                     <groupId>ru.itpark</groupId>
-                                    <artifactId>jdbc-template</artifactId>
+                                    <artifactId>jdbc-helper</artifactId>
                                 </dependency>
                             </artifactItems>
                         </configuration>
