@@ -32,7 +32,8 @@
                     <a class="nav-link" href="<%= request.getContextPath()%>/tasks">Tasks</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0" action="<%= request.getContextPath() %>/search">
+            <form class="form-inline my-2 my-lg-0" method="POST" action="<%= request.getContextPath() %>/search"
+                  enctype="multipart/form-data" accept-charset="UTF-8">
                 <input name="text" class="form-control mr-sm-2" style="width: 250px" type="search" placeholder="Search"
                        aria-label="Search"
                        pattern=".{3,}" required title="3 characters minimum" autofocus>

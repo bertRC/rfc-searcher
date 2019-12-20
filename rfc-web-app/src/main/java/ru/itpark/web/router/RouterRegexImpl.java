@@ -9,6 +9,7 @@ import ru.itpark.service.SearchService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -36,8 +37,12 @@ public class RouterRegexImpl implements Router {
     @Override
     public void route(HttpServletRequest req, HttpServletResponse resp) {
         try {
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
+            resp.setContentType("text/plain;charset=UTF-8");
+
             val rootUrl = req.getContextPath().isEmpty() ? "/" : req.getContextPath();
-            val url = req.getRequestURI().substring(req.getContextPath().length());
+            val url = URLDecoder.decode(req.getRequestURI().substring(req.getContextPath().length()), "UTF-8");
 
             if (url.equals("/")) {
                 if (req.getMethod().equals("GET")) {
@@ -89,7 +94,7 @@ public class RouterRegexImpl implements Router {
                 }
 
                 if (!secondUrlSubPath.isEmpty() && req.getMethod().equals("GET")) {
-                    resp.setContentType("text/plain;charset=utf-8");
+//                    resp.setContentType("text/plain;charset=utf-8");
                     fileService.readRfcFile(secondUrlSubPath, resp.getWriter());
                     return;
                 }
@@ -111,7 +116,7 @@ public class RouterRegexImpl implements Router {
             }
 
             if (firstUrlSubPath.equals("search")) {
-                if (req.getMethod().equals("GET")) {
+                if (req.getMethod().equals("POST")) {
                     val text = req.getParameter("text").trim();
                     searchService.search(text);
                     resp.sendRedirect("/tasks");
@@ -132,7 +137,7 @@ public class RouterRegexImpl implements Router {
 
             if (firstUrlSubPath.equals("results")) {
                 if (req.getMethod().equals("GET")) {
-                    resp.setContentType("text/plain;charset=utf-8");
+//                    resp.setContentType("text/plain;charset=utf-8");
                     fileService.readResultsFile(secondUrlSubPath, resp.getWriter());
                     return;
                 }
