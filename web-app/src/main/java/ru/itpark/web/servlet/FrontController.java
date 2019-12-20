@@ -19,7 +19,7 @@ public class FrontController extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) {
-        log("service");
+//        log("service");
         router.route(req, resp);
     }
 }
