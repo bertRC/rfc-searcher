@@ -21,7 +21,8 @@ public class SearchServiceThreadedImpl implements SearchService {
     private Path rfcPath;
     private QueryRepository queryRepository;
 
-    private final ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private final int procCount = Runtime.getRuntime().availableProcessors();
+    private final ExecutorService pool = Executors.newFixedThreadPool(procCount);
     private final ConcurrentMap<String, List<CompletableFuture<List<String>>>> initialFutures = new ConcurrentHashMap<>();
 
     private final Deque<QueryModel> currentQueries = new ConcurrentLinkedDeque<>();
@@ -98,6 +99,7 @@ public class SearchServiceThreadedImpl implements SearchService {
 
     @Override
     public void search(String text) {
+        System.out.println("Available Processors: " + procCount);
         System.out.println("Starting search: " + text);
         long startTime = System.currentTimeMillis();
         final String id = UUID.randomUUID().toString();
