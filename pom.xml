@@ -6,7 +6,7 @@
 
     <groupId>ru.itpark</groupId>
     <artifactId>rfc-searcher</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file-service.version>1.0.1</file-service.version>
         <jdbc-helper.version>1.0.1</jdbc-helper.version>
-        <rfc-web-app.version>1.0</rfc-web-app.version>
+        <rfc-web-app.version>1.0.1</rfc-web-app.version>
         <guice.version>4.1.0</guice.version>
         <guice-servlet.version>4.1.0</guice-servlet.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
