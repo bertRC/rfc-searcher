@@ -31,7 +31,7 @@
                         <a class="dropdown-item" href="<%= request.getContextPath()%>/rfc?remove=all">Remove All</a>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="<%= request.getContextPath()%>/tasks">Tasks</a>
                 </li>
             </ul>
