@@ -111,8 +111,6 @@ public class SearchServiceThreadedImpl implements SearchService {
                     .collect(Collectors.toList());
             setProgressMaxValue(id, queryFutures.size());
             initialFutures.put(id, queryFutures);
-            System.out.println("Query: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
-            System.out.println("Query: " + text + " " + id + " Current tasks: " + queryFutures.size()); //TODO: remove it
             CompletableFuture<Void> queryTotal = CompletableFuture.allOf(
                     queryFutures.toArray(new CompletableFuture[0]));
             queryTotal.thenRun(() -> {
@@ -131,13 +129,11 @@ public class SearchServiceThreadedImpl implements SearchService {
                 progress.remove(id);
                 long duration = System.currentTimeMillis() - startTime;
                 System.out.println("Query: " + text + " " + id + "Searching took " + duration + " milliseconds");
-                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
             }).exceptionally(e -> {
                 System.out.println("Searching was canceled: " + text + " " + id);
                 queryModel.setStatus(QueryStatus.CANCELED);
                 currentQueriesRemoveLastAndSave();
                 initialFutures.remove(id);
-                System.out.println("Query Completed: " + text + " " + id + " GlobalFutures size: " + initialFutures.size()); //TODO: remove it
                 return null;
             });
         } catch (IOException e) {
