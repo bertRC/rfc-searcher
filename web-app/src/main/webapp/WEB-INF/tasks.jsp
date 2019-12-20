@@ -52,8 +52,8 @@
             <table class="table table-sm table-bordered" id="queryTable">
                 <thead class="thead-light">
                 <tr>
-                    <th scope="col">Search Query</th>
-                    <th scope="col">Query Status</th>
+                    <th scope="col">Search Phrase</th>
+                    <th scope="col">Task Status</th>
                     <th scope="col">Action</th>
                 </tr>
                 </thead>
