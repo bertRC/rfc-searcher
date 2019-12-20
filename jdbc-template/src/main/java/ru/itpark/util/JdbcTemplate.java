@@ -1,5 +1,4 @@
 package ru.itpark.util;
-//TODO: check all imports
 
 import javax.sql.DataSource;
 import java.sql.*;
